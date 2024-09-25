@@ -1,0 +1,19 @@
+p {
+    color : darkslateblue;
+}
+
+.rainbow-text {
+    background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+table, th, td {
+    border: 1px solid black;
+
+    padding: 5px;
+}
+
+table{
+    border-collapse: collapse;
+}

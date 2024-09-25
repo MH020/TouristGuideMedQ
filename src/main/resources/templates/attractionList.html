@@ -1,0 +1,74 @@
+<!-- attractionList.html -->
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Tourist Guide</title>
+        <link th:href= "@{/style.css}" rel="stylesheet">
+    </head>
+    <body>
+
+    <h1 class="rainbow-text">Welcome</h1>
+    <p class="rainbow-text">You can use this site for tourist guides :))</p>
+    <img src="https://t4.ftcdn.net/jpg/00/30/42/27/360_F_30422752_w1SUKUMnnAzhgYSNd01A1oXSYncJizkU.jpg" alt="Tourist Attraction">
+
+    <table>
+        <tr>
+            <th>Attraction</th>
+            <th>Description</th>
+            <th>City</th>
+        </tr>
+
+        <tr th:each="touristAttraction : ${allTouristAttractions}">
+            <td th:text="${touristAttraction.getName()}"/>
+            <td th:text="${touristAttraction.getDescription()}"/>
+            <td th:text = "${touristAttraction.getCity()}"/>
+
+            <td>
+                <a th:href = "@{/attractions/{name}/tags(name=${touristAttraction.getName()})}">  <button type = "submit"> Tags </button> </a>
+
+                <!--<a th:href="@{/attractions/edit(name=${touristAttraction.getName()})}"> <button type = "submit"> Edit </button> </a>-->
+
+                <form method="get" th:action="@{/attractions/{name}/edit}">
+                    <button type="submit">Edit</button>
+                </form>
+
+                <form th:object="${touristAttraction}" method="post" th:action="@{/attractions/{name}/delete(name=${touristAttraction.getName()})}">
+                    <button type="submit"> Delete </button>
+                </form>
+            </td>
+        </tr>
+    </table>
+
+    <form method="get" th:action="@{/attractions/add}">
+        <button type="submit">Add Attraction</button>
+    </form>
+
+    <footer>
+        <p>Contact: 12345678</p>
+    </footer>
+
+    </body>
+</html>
+<!--
+Opret en velkomstside attractionList.html, der vises med flg. endpoint: http://localhost:80801
+Teksten på velkomstsiden skal som minimum:
+• Beskrive turistgui2den - hvad kan den bruges til. Dækker den f.eks. en enkelt by, hele
+Danmark, eller er det en global bucket liste? Er den rettet imod en bestemt
+målgruppe (f.eks. singler eller naturelskere) eller andre relevante informationer.
+• Vise en liste af udvalgte turistattraktioner (f.eks. via links til eksterne sites)
+• Have links til de 2 GET endpoints i applikationen, dvs. links som kan
+▪ Vise alle de hardkodede turistattraktioner fra repository klassen
+▪ vise en af turistattraktionerne
+• En footer med kontaktinfo
+Sidens layout skal formateres med CSS for at se indbydende ud.
+
+Brug som minimum disse tags2:
+• head
+• title
+• nav
+• footer
+• img3
+• ul or ol
+-->
