@@ -78,4 +78,7 @@ jobs:
           app-name: 'Touristguide'
           slot-name: 'Production'
           package: '*.jar'
+      - name: Publish Test Report
+        if: success() || failure()
+        uses: scacap/action-surefire-report@v1
           
