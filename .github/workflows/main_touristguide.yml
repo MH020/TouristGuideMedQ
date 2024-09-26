@@ -15,6 +15,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      
+      - name: Publish Test Report
+        if: success() || failure()
+        uses: scacap/action-surefire-report@v1
 
       - name: Set up Java version
         uses: actions/setup-java@v4
@@ -78,7 +82,5 @@ jobs:
           app-name: 'Touristguide'
           slot-name: 'Production'
           package: '*.jar'
-      - name: Publish Test Report
-        if: success() || failure()
-        uses: scacap/action-surefire-report@v1
+
           
