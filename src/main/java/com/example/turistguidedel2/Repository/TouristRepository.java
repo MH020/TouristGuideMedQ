@@ -50,6 +50,7 @@ public class TouristRepository {
 
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
+        connectToDatabase();
         return new ArrayList<>(touristAttractions);
     }
 
@@ -89,6 +90,10 @@ public class TouristRepository {
 
 
     public void saveTouristAttractions(TouristAttraction touristAttraction){
+        touristAttractions.add(touristAttraction);
+}
+
+    public void connectToDatabase() {
         try (Connection conn = DriverManager.getConnection(databaseUrl, username, password)) {
             System.out.println("Connected to the database");
             Statement st = conn.createStatement();
@@ -103,15 +108,6 @@ public class TouristRepository {
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("failed to connect to the database");
-        }
-        touristAttractions.add(touristAttraction);
-}
-
-    public void connectToDatabase() {
-        try (Connection conn = DriverManager.getConnection(databaseUrl, username, password)) {
-            System.out.println("Connected to the database");
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 }
