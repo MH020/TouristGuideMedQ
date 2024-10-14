@@ -1,5 +1,4 @@
 package com.example.turistguidedel2.Repository;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
@@ -16,14 +15,16 @@ public class TouristRepository {
     private String username;
     @Value("${TEST_PASSWORD}")
     private String password;
+    private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
-    private  ArrayList<TouristAttraction> touristAttractions = new ArrayList<>(); //Using a map (name, desc) could be beneficial.
+    private  ArrayList<TouristAttraction> touristAttractions = new ArrayList<>();
     private ArrayList<String> tags = new ArrayList<String>();
     //trying to implitment the CRUD operations as i understand them:
 
     public TouristRepository() {
         populateAttractions();
+        connectToDatabase();
     }
 
     private void populateAttractions() {
@@ -44,8 +45,20 @@ public class TouristRepository {
     }
 
     //create. add a tourist attraction to the list
-    public void addTouristAttraction(TouristAttraction attraction){
-        touristAttractions.add(attraction);
+
+    //sql create
+    public void addTouristAttraction(TouristAttraction attraction) throws SQLException {
+        String insertSql = "insert into touristattractions (name,description,city) VALUES (?,?,?)";
+        try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
+            statement.setString(1, attraction.getName());
+            statement.setString(2, attraction.getDescription());
+            statement.setString(3, attraction.getCity());
+            int rowsAffected = statement.executeUpdate();
+                System.out.println("A new tourist attraction was added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to add a new tourist attraction");
+        }
     }
 
     //read. simply return the list of tourist attractions and print them out
@@ -93,21 +106,15 @@ public class TouristRepository {
         touristAttractions.add(touristAttraction);
 }
 
-    public void connectToDatabase() {
-        try (Connection conn = DriverManager.getConnection(databaseUrl, username, password)) {
-            System.out.println("Connected to the database");
-            Statement st = conn.createStatement();
-            String sql = "SELECT * FROM touristAttraction";
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()) {
-                String name = rs.getString("name");
-                String city = rs.getString("city");
-                String tags = rs.getString("tags");
-                System.out.println(name + " " + city + " " + tags);
+    private void connectToDatabase() {
+        if (conn == null) {
+            try {
+                conn = DriverManager.getConnection(databaseUrl, username, password);
+                System.out.println("Connected to the database");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Failed to connect to the database");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("failed to connect to the database");
         }
     }
 }
