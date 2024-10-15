@@ -18,9 +18,7 @@ public class ConnectionManager {
     }
 
     private void instantiateConnection(){
-        if(connection != null){
-            System.out.println("hej");
-        }else{
+        if(connection != null) {
             try {
                 connection = DriverManager.getConnection(databaseUrl, username, password);
                 System.out.println("Connected to the database");

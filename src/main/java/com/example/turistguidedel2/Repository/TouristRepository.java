@@ -9,12 +9,6 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-    @Value("${TEST_DATABASE_URL}")
-    private String databaseUrl;
-    @Value("${TEST_USERNAME}")
-    private String username;
-    @Value("${TEST_PASSWORD}")
-    private String password;
     private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
@@ -24,6 +18,7 @@ public class TouristRepository {
 
     public TouristRepository() {
         populateAttractions();
+        conn = ConnectionManager.connection;
     }
 
     private void populateAttractions() {
@@ -47,8 +42,7 @@ public class TouristRepository {
 
     //why are you here you big stupid jellyfish! you dont do anything!
     public int addTouristAttraction(TouristAttraction attraction){
-        int updatedRows = 1;
-        connectToDataBase();
+        int updatedRows = 0;
 
         String insertSql = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
         try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
@@ -72,7 +66,6 @@ public class TouristRepository {
 
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction>  getAllTouristAttractions() {
-        connectToDataBase();
         List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
         try (Statement statement = conn.createStatement()){
         String sqlString = "SELECT * FROM touristattractions";
@@ -105,31 +98,41 @@ public class TouristRepository {
         }
         touristAttractions.remove(index);
     }
-        //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions
-    public TouristAttraction getTouristAttractionByName(String name){
-        for (TouristAttraction attraction : touristAttractions) {
-            if (attraction.getName().equals(name)) {
-                return attraction;
-            }
+
+        //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
+    public List<TouristAttraction> getTouristAttractionByName(String name){
+        List<TouristAttraction> SqlTouristAttractions = new ArrayList<>();
+
+        String sqlString = "SELECT id, NAME FROM touristattractions WHERE NAME LIKE ?";
+        try (PreparedStatement statement = conn.prepareStatement(sqlString)){
+           statement.setString(1, name + "%");
+           ResultSet resultSet = statement.executeQuery();
+           while(resultSet.next()) {
+               int id = resultSet.getInt("id");
+               String Atname = resultSet.getString("name");
+               SqlTouristAttractions.add(new TouristAttraction(Atname, "description", "city", tags));
+           }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return new TouristAttraction("null", "null", "null", new ArrayList<String>());
+        return SqlTouristAttractions;
     }
+
     //get tagsList
     public ArrayList<String> getallTags() {
         return new ArrayList<>(tags);
     }
 
-    public ArrayList<String> getTags(String name) {
+    /*public ArrayList<String> getTags(String name) {
         return getTouristAttractionByName(name).getTags();
-    }
+    } */
 
     //updating the database insert
     public int saveTouristAttractions(TouristAttraction attraction){
         int updatedRows = 1;
-        connectToDataBase();
 
-        String insertSql = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
+        String sqlString = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
 
             statement.setString(1, attraction.getName());
             statement.setString(2, attraction.getDescription());
@@ -146,17 +149,7 @@ public class TouristRepository {
         System.out.println("Number of rows updated: " + updatedRows);
         return updatedRows;
     }
-    private void connectToDataBase() {
-        if (conn == null) {
-            try {
-                conn = DriverManager.getConnection(databaseUrl, username, password);
-                System.out.println("Connected to the database");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Failed to connect to the database");
-            }
-        }
-    }
+
 }
 
 

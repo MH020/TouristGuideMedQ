@@ -28,9 +28,10 @@ public class TouristController {
     //not used.
     @GetMapping("/attractions/{name}")
     public String getTouristAttractionByName(@PathVariable String name, Model model){
-        model.addAttribute("name",touristService.getTouristAttractionByName(name).getName());
+        List<TouristAttraction> attractions = touristService.getTouristAttractionByName(name);
         return "name"; //placeholder name maybe?
     }
+    /* //needs fixing in here and in service and repo
     @GetMapping("/attractions/{name}/tags")
     public String getTouristAttractionByTags(@PathVariable String name, Model model){
         TouristAttraction attraction = touristService.getTouristAttractionByName(name);
@@ -38,7 +39,7 @@ public class TouristController {
         model.addAttribute("tags",touristService.getTouristAttractionTags(name));
         return "tags";
     }
-
+*/
     @PostMapping("/attractions/save")
     public String saveTouristAttractions(@ModelAttribute TouristAttraction touristAttraction) {
         touristService.saveTouristAttractions(touristAttraction);

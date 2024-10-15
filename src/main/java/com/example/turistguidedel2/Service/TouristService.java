@@ -40,19 +40,19 @@ public class TouristService {
     }
 
     //get tourist attraction by name
-    public TouristAttraction getTouristAttractionByName(String name){
-        TouristAttraction ta = repository.getTouristAttractionByName(name);
-        return ta;
+    public List<TouristAttraction> getTouristAttractionByName(String name){
+        return repository.getTouristAttractionByName(name);
     }
     //get tourist attraction tags
 
     public List<String> getAllTouristAttractionTags() {
         return repository.getallTags();
     }
+    /*
     public List<String> getTouristAttractionTags(String name) {
         return repository.getTags(name);
     }
-
+*/
     public void saveTouristAttractions(TouristAttraction touristAttraction){
             touristRepository.saveTouristAttractions(touristAttraction);
         }
