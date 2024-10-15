@@ -71,8 +71,22 @@ public class TouristRepository {
 
 
     //read. simply return the list of tourist attractions and print them out
-    public List<TouristAttraction> getAllTouristAttractions() {
-        return new ArrayList<>(touristAttractions);
+    public List<TouristAttraction>  getAllTouristAttractions() {
+        connectToDataBase();
+        List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
+        try (Statement statement = conn.createStatement()){
+        String sqlString = "SELECT * FROM touristattractions";
+        ResultSet resultSet = statement.executeQuery(sqlString);
+        while (resultSet.next()) {
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            String city = resultSet.getString("city");
+            SqlTouristAttraction.add(new TouristAttraction(name, description, city, tags));
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return SqlTouristAttraction;
     }
 
     //update. find the tourist attraction by name and update the description of it to the new description given in the parameters
