@@ -24,7 +24,6 @@ public class TouristRepository {
 
     public TouristRepository() {
         populateAttractions();
-        connectToDatabase();
     }
 
     private void populateAttractions() {
@@ -46,24 +45,33 @@ public class TouristRepository {
 
     //create. add a tourist attraction to the list
 
-    //sql create
-    public void addTouristAttraction(TouristAttraction attraction) throws SQLException {
-        String insertSql = "insert into touristattractions (name,description,city) VALUES (?,?,?)";
+    //why are you here you big stupid jellyfish! you dont do anything!
+    public int addTouristAttraction(TouristAttraction attraction){
+        int updatedRows = 1;
+        connectToDataBase();
+
+        String insertSql = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
         try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
+
             statement.setString(1, attraction.getName());
             statement.setString(2, attraction.getDescription());
-            statement.setString(3, attraction.getCity());
-            int rowsAffected = statement.executeUpdate();
-                System.out.println("A new tourist attraction was added successfully!");
+            statement.setString(3, "Copenhagen");
+
+
+            updatedRows = statement.executeUpdate();
+
+            System.out.println("A new tourist attraction was added successfully!");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Failed to add a new tourist attraction");
         }
+        System.out.println("Number of rows updated: " + updatedRows);
+        return updatedRows;
     }
+
 
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
-        connectToDatabase();
         return new ArrayList<>(touristAttractions);
     }
 
@@ -101,12 +109,30 @@ public class TouristRepository {
         return getTouristAttractionByName(name).getTags();
     }
 
+    //updating the database insert
+    public int saveTouristAttractions(TouristAttraction attraction){
+        int updatedRows = 1;
+        connectToDataBase();
 
-    public void saveTouristAttractions(TouristAttraction touristAttraction){
-        touristAttractions.add(touristAttraction);
-}
+        String insertSql = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
 
-    private void connectToDatabase() {
+            statement.setString(1, attraction.getName());
+            statement.setString(2, attraction.getDescription());
+            statement.setString(3, "Copenhagen");
+
+
+            updatedRows = statement.executeUpdate();
+
+            System.out.println("A new tourist attraction was added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to add a new tourist attraction");
+        }
+        System.out.println("Number of rows updated: " + updatedRows);
+        return updatedRows;
+    }
+    private void connectToDataBase() {
         if (conn == null) {
             try {
                 conn = DriverManager.getConnection(databaseUrl, username, password);
