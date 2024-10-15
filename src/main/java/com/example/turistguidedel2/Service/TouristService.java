@@ -21,11 +21,7 @@ public class TouristService {
     }
     // so I will now implement the CRUD operations in this class that use the repository to do the operations
 
-    //create. add a tourist attraction to the list
-    public void addTouristAttraction(TouristAttraction Attraction){
-        repository.addTouristAttraction(Attraction);
 
-    }
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
         return repository.getAllTouristAttractions();

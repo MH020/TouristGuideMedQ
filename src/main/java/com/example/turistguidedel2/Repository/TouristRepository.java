@@ -1,5 +1,4 @@
 package com.example.turistguidedel2.Repository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
@@ -37,33 +36,6 @@ public class TouristRepository {
         TouristAttraction attraction4 = new TouristAttraction("Tivoli Gardens", "The 2nd oldest amusement park in the world.", "Copenhagen", tags);
         touristAttractions.add(attraction4);
     }
-
-    //create. add a tourist attraction to the list
-
-    //why are you here you big stupid jellyfish! you dont do anything!
-    public int addTouristAttraction(TouristAttraction attraction){
-        int updatedRows = 0;
-
-        String insertSql = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(insertSql)) {
-
-            statement.setString(1, attraction.getName());
-            statement.setString(2, attraction.getDescription());
-            statement.setString(3, "Copenhagen");
-
-
-            updatedRows = statement.executeUpdate();
-
-            System.out.println("A new tourist attraction was added successfully!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed to add a new tourist attraction");
-        }
-        System.out.println("Number of rows updated: " + updatedRows);
-        return updatedRows;
-    }
-
-
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction>  getAllTouristAttractions() {
         List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
@@ -102,7 +74,6 @@ public class TouristRepository {
         //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
     public List<TouristAttraction> getTouristAttractionByName(String name){
         List<TouristAttraction> SqlTouristAttractions = new ArrayList<>();
-
         String sqlString = "SELECT id, NAME FROM touristattractions WHERE NAME LIKE ?";
         try (PreparedStatement statement = conn.prepareStatement(sqlString)){
            statement.setString(1, name + "%");
@@ -128,6 +99,7 @@ public class TouristRepository {
     } */
 
     //updating the database insert
+    //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction){
         int updatedRows = 1;
 
