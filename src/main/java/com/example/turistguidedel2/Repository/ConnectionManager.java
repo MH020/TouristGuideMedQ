@@ -2,6 +2,7 @@ package com.example.turistguidedel2.Repository;
 import org.springframework.beans.factory.annotation.Value;
 import java.sql.*;
 
+
 public class ConnectionManager {
     static Connection connection;
 
@@ -20,17 +21,10 @@ public class ConnectionManager {
     private String PROD_PASSWORD;
 
     private ConnectionManager(){
-        instantiateConnection();
+        instantiateTestConnection();
     }
     private void instantiateConnection(){
-        if(connection != null) {
-            try {
-                connection = DriverManager.getConnection(TEST_DATABASE_URL, TEST_USERNAME, TEST_PASSWORD);
-                System.out.println("Connected to the TestDataBase");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Failed to connect to the database");
-            }
+        if(connection == null) {
             try {
                 connection = DriverManager.getConnection(PROD_DATABASE_URL, PROD_USERNAME, PROD_PASSWORD);
                 System.out.println("Connected to the database");
@@ -40,4 +34,17 @@ public class ConnectionManager {
             }
         }
     }
+    public void instantiateTestConnection(){
+        if (connection == null) {
+            try {
+                connection = DriverManager.getConnection(TEST_DATABASE_URL, TEST_USERNAME, TEST_PASSWORD);
+                System.out.println("Connected to the TestDataBase");
+            } catch(SQLException e){
+                e.printStackTrace();
+                System.out.println("Failed to connect to the database");
+            }
+        }
+    }
+
+
 }
