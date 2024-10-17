@@ -4,7 +4,7 @@ import java.sql.*;
 
 
 public class ConnectionManager {
-    static Connection connection;
+    static public Connection connection;
 
     @Value("${TEST_DATABASE_URL}")
     private String TEST_DATABASE_URL;
@@ -21,19 +21,24 @@ public class ConnectionManager {
     private String PROD_PASSWORD;
 
     private ConnectionManager(){
-        instantiateTestConnection();
+        connection = instantiateConnection();
     }
-    private void instantiateConnection(){
-        if(connection == null) {
-            try {
+
+    private Connection instantiateConnection(){
+        if (connection != null) {
+            return connection;
+        }
+
+        try {
                 connection = DriverManager.getConnection(PROD_DATABASE_URL, PROD_USERNAME, PROD_PASSWORD);
                 System.out.println("Connected to the database");
-            } catch (SQLException e) {
+        } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Failed to connect to the ProdDataBase");
-            }
         }
+        return connection;
     }
+
     public void instantiateTestConnection(){
         if (connection == null) {
             try {
@@ -46,5 +51,7 @@ public class ConnectionManager {
         }
     }
 
-
+    static public Connection getConnection(){
+        return connection;
+    }
 }

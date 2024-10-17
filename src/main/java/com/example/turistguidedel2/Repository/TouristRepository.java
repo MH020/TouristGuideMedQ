@@ -18,6 +18,17 @@ public class TouristRepository {
     public TouristRepository() {
         populateAttractions();
         conn = ConnectionManager.connection;
+
+        if (conn == null){
+            conn = ConnectionManager.getConnection();
+            System.out.println("connection was null");
+            System.out.println(ConnectionManager.getConnection());
+        }
+        if (conn == null){
+            conn = ConnectionManager.getConnection();
+            System.out.println("connection was null");
+        }
+
     }
 
     private void populateAttractions() {
