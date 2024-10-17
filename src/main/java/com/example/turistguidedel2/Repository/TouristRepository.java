@@ -154,7 +154,7 @@ public class TouristRepository {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                System.out.println("Failed to connect to the TEST database");
+                System.out.println("Failed to connect to the  database");
             }
     }
 
