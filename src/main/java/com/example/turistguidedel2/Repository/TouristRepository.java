@@ -1,4 +1,5 @@
 package com.example.turistguidedel2.Repository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
@@ -8,6 +9,23 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
+    @Value("${TEST_DATABASE_URL}")
+    private String databaseUrl;
+    @Value("${TEST_USERNAME}")
+    private String username;
+    @Value("${TEST_PASSWORD}")
+    private String password;
+    @Value("${PROD_DATABASE_URL}")
+    private String prodDatabaseUrl;
+    @Value("${PROD_USERNAME}")
+    private String prodUsername;
+    @Value("${PROD_PASSWORD}")
+    private String prodPassword;
+
+    //profilen bliver loaded her tror jeg.
+    @Value( "${spring.profiles.active}")
+    private String activeProfile;
+
     private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
@@ -17,18 +35,6 @@ public class TouristRepository {
 
     public TouristRepository() {
         populateAttractions();
-        conn = ConnectionManager.connection;
-
-        if (conn == null){
-            conn = ConnectionManager.getConnection();
-            System.out.println("connection was null");
-            System.out.println(ConnectionManager.getConnection());
-        }
-        if (conn == null){
-            conn = ConnectionManager.getConnection();
-            System.out.println("connection was null");
-        }
-
     }
 
     private void populateAttractions() {
@@ -49,6 +55,7 @@ public class TouristRepository {
     }
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction>  getAllTouristAttractions() {
+        connectToDataBase();
         List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
         try (Statement statement = conn.createStatement()){
         String sqlString = "SELECT * FROM touristattractions";
@@ -61,6 +68,8 @@ public class TouristRepository {
         }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            disconnectFromDataBase();
         }
         return SqlTouristAttraction;
     }
@@ -131,6 +140,34 @@ public class TouristRepository {
         }
         System.out.println("Number of rows updated: " + updatedRows);
         return updatedRows;
+    }
+    private void connectToDataBase() {
+            try {
+                if("test".equals(activeProfile)){
+                    conn = DriverManager.getConnection(databaseUrl, username, password);
+                    System.out.println("Connected to the Test database");
+                } else if("prod".equals(activeProfile)){
+                    conn = DriverManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
+                    System.out.println("Connected to the PROD database");
+                } else {
+                    System.out.println("No active profile found");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Failed to connect to the TEST database");
+            }
+    }
+
+    private void disconnectFromDataBase() {
+        if (conn != null) {
+            try {
+                conn.close();
+                System.out.println("Disconnected from the database");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("Failed to disconnect from the database");
+            }
+        }
     }
 
 
