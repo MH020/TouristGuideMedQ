@@ -14,17 +14,16 @@ public class ConnectionManager {
     private String TEST_PASSWORD;
 
     @Value("${PROD_DATABASE_URL}")
-    private String PROD_DATABASE_URL;
+    static private String PROD_DATABASE_URL;
     @Value("${PROD_USERNAME}")
-    private String PROD_USERNAME;
+    static private String PROD_USERNAME;
     @Value("${PROD_PASSWORD}")
-    private String PROD_PASSWORD;
+    static private String PROD_PASSWORD;
 
     private ConnectionManager(){
-        connection = instantiateConnection();
     }
 
-    private Connection instantiateConnection(){
+    public static Connection instantiateConnection(){
         if (connection != null) {
             return connection;
         }
