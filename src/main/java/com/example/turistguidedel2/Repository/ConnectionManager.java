@@ -21,7 +21,7 @@ public class ConnectionManager {
     private String PROD_PASSWORD;
 
     private ConnectionManager(){
-        instantiateTestConnection();
+        instantiateConnection();
     }
     private void instantiateConnection(){
         if(connection == null) {
