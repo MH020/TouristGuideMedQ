@@ -97,7 +97,7 @@ public class TouristRepository {
         try (Connection conn = DriverManager.getConnection(databaseUrl, username, password)) {
             System.out.println("Connected to the database");
             Statement st = conn.createStatement();
-            String sql = "SELECT * FROM touristAttraction";
+            String sql = "SELECT * FROM tourisattractions";
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 String name = rs.getString("name");
