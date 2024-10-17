@@ -1,5 +1,4 @@
 package com.example.turistguidedel2.Repository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
@@ -9,14 +8,6 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-
-    @Value("${PROD_DATABASE_URL}")
-    private String PROD_DATABASE_URL;
-    @Value("${PROD_USERNAME}")
-    private String PROD_USERNAME;
-    @Value("${PROD_PASSWORD}")
-    private String PROD_PASSWORD;
-
     private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
@@ -26,6 +17,18 @@ public class TouristRepository {
 
     public TouristRepository() {
         populateAttractions();
+        conn = ConnectionManager.connection;
+
+        if (conn == null){
+            conn = ConnectionManager.getConnection();
+            System.out.println("connection was null");
+            System.out.println(ConnectionManager.getConnection());
+        }
+        if (conn == null){
+            conn = ConnectionManager.getConnection();
+            System.out.println("connection was null");
+        }
+
     }
 
     private void populateAttractions() {
@@ -46,7 +49,6 @@ public class TouristRepository {
     }
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction>  getAllTouristAttractions() {
-        instantiateConnection();
         List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
         try (Statement statement = conn.createStatement()){
         String sqlString = "SELECT * FROM touristattractions";
@@ -129,17 +131,6 @@ public class TouristRepository {
         }
         System.out.println("Number of rows updated: " + updatedRows);
         return updatedRows;
-    }
-    private void instantiateConnection(){
-        if(conn == null) {
-            try {
-                conn = DriverManager.getConnection(PROD_DATABASE_URL, PROD_USERNAME, PROD_PASSWORD);
-                System.out.println("Connected to the database");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Failed to connect to the ProdDataBase");
-            }
-        }
     }
 
 
