@@ -40,11 +40,10 @@ public class TouristRepository {
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
         connectToDataBase();
-        List<TouristAttraction> sqlTouristAttraction = new ArrayList<>();
 
         try (Statement statement = conn.createStatement()) {
-            // Updated SQL query to fetch tourist attractions with associated tags
-            String sqlString = "SELECT ta.id, ta.name, ta.description, ta.city, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
+            String sqlString =
+                      "SELECT ta.id, ta.name, ta.description, ta.city, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
                     + "FROM TouristAttractions ta "
                     + "LEFT JOIN AttractionTags at ON ta.id = at.tourist_attraction_id "
                     + "LEFT JOIN Tags t ON at.tag_id = t.id "
@@ -52,15 +51,15 @@ public class TouristRepository {
 
             ResultSet resultSet = statement.executeQuery(sqlString);
 
-            // Iterate over the result set
+            touristAttractions.clear();
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String city = resultSet.getString("city");
-                String tags = resultSet.getString("tags");  // Tags as a comma-separated string
+                String tags = resultSet.getString("tags");
 
-                // Add to the list of TouristAttractions, passing tags as part of the object
-                sqlTouristAttraction.add(new TouristAttraction(name, description, city, tags));
+
+                touristAttractions.add(new TouristAttraction(name, description, city, tags));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -68,28 +67,29 @@ public class TouristRepository {
             disconnectFromDataBase();
         }
 
-        return sqlTouristAttraction;
+        return touristAttractions;
     }
 
 
     //update. find the tourist attraction by name and update the description of it to the new description given in the parameters
-    public void updateTouristAttraction(String name, String newDesc){
-    connectToDataBase();
-    String sqlString = "UPDATE touristattractions SET description = ? WHERE name = ?";
-    try (PreparedStatement statement = conn.prepareStatement(sqlString)){
-        statement.setString(1, newDesc);
-        statement.setString(2, name);
-        int rowsAffected = statement.executeUpdate();
-        if (rowsAffected == 1) {
-            System.out.println("Tourist attraction updated successfully");
-        } else {
-            System.out.println("Tourist attraction not found");
+    public void updateTouristAttraction(String name, String newDesc) {
+        connectToDataBase();
+        String sqlString = "UPDATE touristattractions SET description = ? WHERE name = ?";
+
+        try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
+            statement.setString(1, newDesc);
+            statement.setString(2, name);
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 1) {
+                System.out.println("Tourist attraction updated successfully");
+            } else {
+                System.out.println("Tourist attraction not found");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            disconnectFromDataBase();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    } finally {
-        disconnectFromDataBase();
-    }
     }
 
 
