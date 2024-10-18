@@ -119,12 +119,10 @@ public class TouristRepository {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
-                    int id = resultSet.getInt("id");
-                    String Atname = resultSet.getString("name");
                     String description = resultSet.getString("description");
                     String city = resultSet.getString("city");
                     String tags = resultSet.getString("tags");
-                    touristAttraction = new TouristAttraction(Atname, description, city, tags);
+                    touristAttraction = new TouristAttraction(name, description, city, tags);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

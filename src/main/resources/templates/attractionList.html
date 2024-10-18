@@ -3,45 +3,47 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Tourist Guide</title>
-    <link th:href= "@{/style.css}" rel="stylesheet">
+    <title>Attractions List</title>
+    <link th:href="@{/style.css}" rel="stylesheet">
 </head>
-<body>
 
-<h1 class="rainbow-text">Welcome</h1>
-<p class="rainbow-text">You can use this site for tourist guides :))</p>
-<img src="https://t4.ftcdn.net/jpg/00/30/42/27/360_F_30422752_w1SUKUMnnAzhgYSNd01A1oXSYncJizkU.jpg" alt="Tourist Attraction">
+<body>
+<h1>Attractions List</h1>
 
 <table>
+    <thead>
     <tr>
-        <th>Attraction</th>
+        <th>Name</th>
         <th>Description</th>
         <th>City</th>
-        <th>Tags</th> <!-- Add a column for tags -->
+        <th>Tags</th>
+        <th>Actions</th>
     </tr>
-
+    </thead>
+    <tbody>
     <tr th:each="touristAttraction : ${allTouristAttractions}">
         <td th:text="${touristAttraction.getName()}"></td>
         <td th:text="${touristAttraction.getDescription()}"></td>
         <td th:text="${touristAttraction.getCity()}"></td>
-
-        <!-- Display the tags as a comma-separated string -->
-        <td th:text="${touristAttraction.getTags()}"></td> <!-- Assuming getTags() returns a comma-separated string -->
+        <td th:text="${touristAttraction.getTags()}"></td>
 
         <td>
-            <a th:href = "@{/attractions/{name}/tags(name=${touristAttraction.getName()})}">
-                <button type="submit">Tags</button>
+            <a th:href="@{/attractions/{name}/tags(name=${touristAttraction.getName()})}">
+                <button type="button">Tags</button>
             </a>
 
-            <form method="get" th:action="@{/attractions/{name}/edit}">
+            <!-- Edit button form -->
+            <form method="get" th:action="@{/attractions/{name}/edit(name=${touristAttraction.getName()})}" style="display:inline;">
                 <button type="submit">Edit</button>
             </form>
 
-            <form th:object="${touristAttraction}" method="post" th:action="@{/attractions/{name}/delete(name=${touristAttraction.getName()})}">
+            <!-- Delete button form -->
+            <form th:object="${touristAttraction}" method="post" th:action="@{/attractions/{name}/delete(name=${touristAttraction.getName()})}" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>
         </td>
     </tr>
+    </tbody>
 </table>
 
 <form method="get" th:action="@{/attractions/add}">
