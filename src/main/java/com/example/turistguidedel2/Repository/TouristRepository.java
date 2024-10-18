@@ -133,14 +133,21 @@ public class TouristRepository {
         }
 
     //get tagsList
-    public ArrayList<String> getallTags() {
-        return new ArrayList<>();
+    public ArrayList<String> getAllTags() {
+        List <String> tags = new ArrayList<>();
+        connectToDataBase();
+        String sqlString = "SELECT name FROM TAGS";
+        try (Statement statement = conn.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sqlString);
+            while (resultSet.next()) {
+                tags.add(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
     }
-
-    /*public ArrayList<String> getTags(String name) {
-        return getTouristAttractionByName(name).getTags();
-    } */
-
+        return (ArrayList<String>) tags;
+    }
+    
     //updating the database insert
     //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction){

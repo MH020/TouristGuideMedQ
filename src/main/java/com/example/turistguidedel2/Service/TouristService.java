@@ -40,6 +40,9 @@ public class TouristService {
         return repository.getTouristAttractionByName(name);
     }
     //get tourist attraction tags
+    public List<String> getAllTags(){
+        return repository.getAllTags();
+    }
 
     /*
     public List<String> getTouristAttractionTags(String name) {
