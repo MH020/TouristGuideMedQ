@@ -28,16 +28,14 @@
         <td th:text="${touristAttraction.getTags()}"></td>
 
         <td>
-            <a th:href="@{/attractions/{name}/tags(name=${touristAttraction.getName()})}">
-                <button type="button">Tags</button>
-            </a>
 
-            <!-- Edit button form -->
+
+
             <form method="get" th:action="@{/attractions/{name}/edit(name=${touristAttraction.getName()})}" style="display:inline;">
                 <button type="submit">Edit</button>
             </form>
 
-            <!-- Delete button form -->
+
             <form th:object="${touristAttraction}" method="post" th:action="@{/attractions/{name}/delete(name=${touristAttraction.getName()})}" style="display:inline;">
                 <button type="submit">Delete</button>
             </form>

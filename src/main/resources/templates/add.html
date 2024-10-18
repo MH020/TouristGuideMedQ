@@ -9,22 +9,22 @@
 <body>
 <h1>Add Attraction</h1>
 
-<form method="POST" th:action="@{/attractions/save}" th:object="${TouristAttraction}">
+<form th:action="@{/attractions/save}" th:method="post" th:object="${TouristAttraction}">
     <label for="name">Name:</label>
-    <input type="text" id="name" th:field="*{name}" required> <br>
+    <input type="text" id="name" name="name" th:value="${touristAttraction.name}" readonly> <br>
 
     <label for="description">Description:</label>
-    <input type="text" id="description" th:field="*{description}" required> <br>
+    <input type="text" id="description" name="description" th:value="${touristAttraction.description}"> <br>
 
     <label for="city">City:</label>
-    <select id="city" th:field="*{city}">
-        <option th:each="type : ${city}" th:value="${type}" th:text="${type.displayName}">City</option>
-    </select>
+    <input type="text" id="city" name="city" th:value="${touristAttraction.city}"> <br>
 
-    <div th:each="tag : ${taglist}">
-        <input type="checkbox" th:field="*{tags}" th:value="${tag}" th:text="${tag}">
-        <label th:for="${tag}"> </label> <br>
+    <div th:each="tag : ${availableTags}">
+        <input type="checkbox" th:id="${tag}" th:name="tags" th:value="${tag}"
+               th:checked="${#lists.contains(touristAttraction.tags, tag)}">
+        <label th:for="${tag}" th:text="${tag}"></label>
     </div>
+    <br>
 
     <button type="submit">Save</button>
 </form>

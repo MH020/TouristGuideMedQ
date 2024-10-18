@@ -147,7 +147,7 @@ public class TouristRepository {
     }
         return (ArrayList<String>) tags;
     }
-    
+
     //updating the database insert
     //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction){
@@ -171,6 +171,10 @@ public class TouristRepository {
         System.out.println("Number of rows updated: " + updatedRows);
         return updatedRows;
     }
+
+
+
+
     private void connectToDataBase() {
             try {
                 if("test".equals(activeProfile)){
