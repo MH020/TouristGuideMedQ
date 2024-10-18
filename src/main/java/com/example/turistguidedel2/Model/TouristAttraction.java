@@ -8,7 +8,7 @@ public class TouristAttraction {
     private String name;
     private String description;
     private String city;
-    private ArrayList<String> tags ;
+    private String tags ;
 
     //getters and setters
     public String getName() {
@@ -32,21 +32,19 @@ public class TouristAttraction {
     }
 
     //constructor
-    public TouristAttraction(String name, String description, String city, ArrayList<String> tags) {
+    public TouristAttraction(String name, String description, String city,  String tags) {
         this.name = name;
         this.description = description;
         this.city = city;
         this.tags = tags;
     }
 
-    public ArrayList<String> getTags(){
+    public String getTags() {
         return tags;
     }
 
     public String getCity(){
         return city;
     }
-    public void setTags(ArrayList<String> tags){
-        this.tags = tags;
-    }
+
 }

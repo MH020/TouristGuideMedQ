@@ -30,58 +30,69 @@ public class TouristRepository {
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
     private  ArrayList<TouristAttraction> touristAttractions = new ArrayList<>();
-    private ArrayList<String> tags = new ArrayList<String>();
+
+
     //trying to implitment the CRUD operations as i understand them:
 
     public TouristRepository() {
-        populateAttractions();
     }
 
-    private void populateAttractions() {
-        tags.add("Historical");
-        tags.add("Museum");
-        tags.add("Art");
-        tags.add("Culture");
-        tags.add("Sightseeing");
-        tags.add("Nature");
-        TouristAttraction attraction1 = new TouristAttraction("ARoS", "Art museum.", "Aarhus", tags);
-        touristAttractions.add(attraction1);
-        TouristAttraction attraction2 = new TouristAttraction("Bakken", "The oldest amusement park in the world.", "Klampenborg", tags);
-        touristAttractions.add(attraction2);
-        TouristAttraction attraction3 = new TouristAttraction("Rundetårn", "Europe's oldest observatory.", "Copenhagen", tags);
-        touristAttractions.add(attraction3);
-        TouristAttraction attraction4 = new TouristAttraction("Tivoli Gardens", "The 2nd oldest amusement park in the world.", "Copenhagen", tags);
-        touristAttractions.add(attraction4);
-    }
     //read. simply return the list of tourist attractions and print them out
-    public List<TouristAttraction>  getAllTouristAttractions() {
+    public List<TouristAttraction> getAllTouristAttractions() {
         connectToDataBase();
-        List<TouristAttraction> SqlTouristAttraction = new ArrayList<>();
-        try (Statement statement = conn.createStatement()){
-        String sqlString = "SELECT * FROM touristattractions";
-        ResultSet resultSet = statement.executeQuery(sqlString);
-        while (resultSet.next()) {
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            String city = resultSet.getString("city");
-            SqlTouristAttraction.add(new TouristAttraction(name, description, city, tags));
-        }
+        List<TouristAttraction> sqlTouristAttraction = new ArrayList<>();
+
+        try (Statement statement = conn.createStatement()) {
+            // Updated SQL query to fetch tourist attractions with associated tags
+            String sqlString = "SELECT ta.id, ta.name, ta.description, ta.city, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
+                    + "FROM TouristAttractions ta "
+                    + "LEFT JOIN AttractionTags at ON ta.id = at.tourist_attraction_id "
+                    + "LEFT JOIN Tags t ON at.tag_id = t.id "
+                    + "GROUP BY ta.id, ta.name, ta.description, ta.city";
+
+            ResultSet resultSet = statement.executeQuery(sqlString);
+
+            // Iterate over the result set
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
+                String city = resultSet.getString("city");
+                String tags = resultSet.getString("tags");  // Tags as a comma-separated string
+
+                // Add to the list of TouristAttractions, passing tags as part of the object
+                sqlTouristAttraction.add(new TouristAttraction(name, description, city, tags));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             disconnectFromDataBase();
         }
-        return SqlTouristAttraction;
+
+        return sqlTouristAttraction;
     }
+
 
     //update. find the tourist attraction by name and update the description of it to the new description given in the parameters
     public void updateTouristAttraction(String name, String newDesc){
-        for (TouristAttraction attraction : touristAttractions) {
-            if (attraction.getName().equals(name)) {
-                attraction.setDescription(newDesc);
-            }
+    connectToDataBase();
+    String sqlString = "UPDATE touristattractions SET description = ? WHERE name = ?";
+    try (PreparedStatement statement = conn.prepareStatement(sqlString)){
+        statement.setString(1, newDesc);
+        statement.setString(2, name);
+        int rowsAffected = statement.executeUpdate();
+        if (rowsAffected == 1) {
+            System.out.println("Tourist attraction updated successfully");
+        } else {
+            System.out.println("Tourist attraction not found");
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } finally {
+        disconnectFromDataBase();
     }
+    }
+
+
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
         int index = touristAttractions.indexOf(getTouristAttractionByName(name));
@@ -92,26 +103,40 @@ public class TouristRepository {
     }
 
         //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
-    public List<TouristAttraction> getTouristAttractionByName(String name){
-        List<TouristAttraction> SqlTouristAttractions = new ArrayList<>();
-        String sqlString = "SELECT id, NAME FROM touristattractions WHERE NAME LIKE ?";
-        try (PreparedStatement statement = conn.prepareStatement(sqlString)){
-           statement.setString(1, name + "%");
-           ResultSet resultSet = statement.executeQuery();
-           while(resultSet.next()) {
-               int id = resultSet.getInt("id");
-               String Atname = resultSet.getString("name");
-               SqlTouristAttractions.add(new TouristAttraction(Atname, "description", "city", tags));
-           }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        public TouristAttraction getTouristAttractionByName(String name) {
+            connectToDataBase();
+            TouristAttraction touristAttraction = null;
+            String sqlString =
+                    "SELECT TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city, " +
+                            "GROUP_CONCAT(Tags.name SEPARATOR ', ') AS tags " +
+                            "FROM TouristAttractions " +
+                            "LEFT JOIN AttractionTags ON TouristAttractions.id = AttractionTags.tourist_attraction_id " +
+                            "LEFT JOIN Tags ON AttractionTags.tag_id = Tags.id " +
+                            "WHERE TouristAttractions.name LIKE ? " +
+                            "GROUP BY TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city";
+
+            try (PreparedStatement statement = conn.prepareStatement(sqlString)){
+                statement.setString(1, name);
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    int id = resultSet.getInt("id");
+                    String Atname = resultSet.getString("name");
+                    String description = resultSet.getString("description");
+                    String city = resultSet.getString("city");
+                    String tags = resultSet.getString("tags");
+                    touristAttraction = new TouristAttraction(Atname, description, city, tags);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                disconnectFromDataBase();
+            }
+            return touristAttraction;
         }
-        return SqlTouristAttractions;
-    }
 
     //get tagsList
     public ArrayList<String> getallTags() {
-        return new ArrayList<>(tags);
+        return new ArrayList<>();
     }
 
     /*public ArrayList<String> getTags(String name) {

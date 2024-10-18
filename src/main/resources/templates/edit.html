@@ -4,29 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Attraction</title>
-    <link th:href= "@{/style.css}" rel="stylesheet">
+    <link th:href="@{/style.css}" rel="stylesheet">
 </head>
 
 <body>
 <h1>Edit Attraction</h1>
 
-    <form th:action="@{/attractions/update}" th:method="post" th:object="${touristAttraction}" autocomplete="off">
+<form th:action="@{/attractions/update}" th:method="post" th:object="${touristAttraction}" autocomplete="off">
 
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" readonly> <br>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" readonly> <br>
 
-                <label for="description">Description:</label>
-                <input type="text" id="description" name="description"> <br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description"> <br>
 
-                <label for="city">City:</label>
-                <input type="text" id="city" name="city"> <br>
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city"> <br>
 
-        <div th:each="tag : ${taglist}">
-            <input type="checkbox" th:field="*{tags}" th:value="${tag}" th:text="${tag}">
-            <label th:for="${tag}"> </label> <br>
-        </div>
+    <label for="tags">Tags:</label>
+    <input type="text" id="tags" name="tags" th:value="${touristAttraction.tags}"> <br>
 
-<button type="submit">Update</button>
+
+    <button type="submit">Update</button>
 </form>
 
 </body>

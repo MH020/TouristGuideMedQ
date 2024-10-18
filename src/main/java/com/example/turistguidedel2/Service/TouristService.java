@@ -36,14 +36,11 @@ public class TouristService {
     }
 
     //get tourist attraction by name
-    public List<TouristAttraction> getTouristAttractionByName(String name){
+    public TouristAttraction getTouristAttractionByName(String name){
         return repository.getTouristAttractionByName(name);
     }
     //get tourist attraction tags
 
-    public List<String> getAllTouristAttractionTags() {
-        return repository.getallTags();
-    }
     /*
     public List<String> getTouristAttractionTags(String name) {
         return repository.getTags(name);
