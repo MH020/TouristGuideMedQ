@@ -47,7 +47,7 @@ public class TouristController {
 
     @GetMapping("/attractions/add")
     public String addTouristAttraction(Model model){
-        model.addAttribute("TouristAttraction", new TouristAttraction());
+        model.addAttribute("touristAttraction", new TouristAttraction());
         List <String> availableTags  = touristService.getAllTags();
         model.addAttribute("availableTags", availableTags);
         return "add";

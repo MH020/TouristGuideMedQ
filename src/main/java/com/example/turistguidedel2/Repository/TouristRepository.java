@@ -29,7 +29,7 @@ public class TouristRepository {
     private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
-    private  ArrayList<TouristAttraction> touristAttractions = new ArrayList<>();
+    private  final ArrayList<TouristAttraction>  touristAttractions = new ArrayList<>();
 
 
     //trying to implitment the CRUD operations as i understand them:
@@ -151,30 +151,64 @@ public class TouristRepository {
     //updating the database insert
     //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction){
-        int updatedRows = 1;
+        connectToDataBase();
+        int updatedRows = 0;
 
-        String sqlString = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
-        try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
+        String insertAttraciton =  "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
+           String getTagID ="SELECT id FROM tags WHERE name = ?";
+           String insertAttractionTags =" INSERT INTO attractiontags (tourist_attraction_id, tag_id) VALUES (?, ?)";
+           try {
+               conn.setAutoCommit(false);
+
+           try (PreparedStatement statement = conn.prepareStatement(insertAttraciton, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, attraction.getName());
             statement.setString(2, attraction.getDescription());
-            statement.setString(3, "Copenhagen");
-
+            statement.setString(3, attraction.getCity());
 
             updatedRows = statement.executeUpdate();
 
-            System.out.println("A new tourist attraction was added successfully!");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            System.out.println("Failed to add a new tourist attraction");
-        }
-        System.out.println("Number of rows updated: " + updatedRows);
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    int touristAttractionId = generatedKeys.getInt(1);
+
+                    //insert tags
+                    try (PreparedStatement getTagIDStatement = conn.prepareStatement(getTagID)){;
+                        PreparedStatement insertAttractionTagsStatement = conn.prepareStatement(insertAttractionTags);
+                    for (String tag : attraction.getTags().split(", ")) {
+                        getTagIDStatement.setString(1, tag);
+                        try (ResultSet resultSet = getTagIDStatement.executeQuery()) {
+                            if (resultSet.next()) {
+                                int tagId = resultSet.getInt("id");
+                                insertAttractionTagsStatement.setInt(1, touristAttractionId);
+                                insertAttractionTagsStatement.setInt(2, tagId);
+                                insertAttractionTagsStatement.executeUpdate();
+                            }
+                        }
+                    }
+                }
+            }
+            }
+               conn.commit();
+               System.out.println("A new tourist attraction was added successfully!");
+           } catch (SQLException e) {
+               e.printStackTrace();
+               System.out.println("Failed to add a new tourist attraction");
+
+               try {
+                   conn.rollback();
+               } catch (SQLException rollbackEx) {
+                   rollbackEx.printStackTrace();
+               }
+           }
+           } catch (SQLException e) {
+               e.printStackTrace();
+           } finally {
+               disconnectFromDataBase();
+           }
+
         return updatedRows;
     }
-
-
-
-
     private void connectToDataBase() {
             try {
                 if("test".equals(activeProfile)){

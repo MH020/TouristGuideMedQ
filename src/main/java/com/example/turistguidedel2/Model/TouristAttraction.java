@@ -26,10 +26,24 @@ public class TouristAttraction {
     public void setDescription(String description) {
         this.description = description;
     }
+    public String getTags() {
+        return tags;
+    }
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getCity(){
+        return city;
+    }
+    public void setCity(String city){
+        this.city = city;
+    }
 
     //Tom constructor
     public TouristAttraction() {
     }
+
 
     //constructor
     public TouristAttraction(String name, String description, String city,  String tags) {
@@ -39,12 +53,5 @@ public class TouristAttraction {
         this.tags = tags;
     }
 
-    public String getTags() {
-        return tags;
-    }
-
-    public String getCity(){
-        return city;
-    }
 
 }
