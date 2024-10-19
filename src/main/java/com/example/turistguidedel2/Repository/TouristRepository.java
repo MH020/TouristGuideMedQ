@@ -150,65 +150,75 @@ public class TouristRepository {
 
     //updating the database insert
     //create. add a tourist attraction to the list
-    public int saveTouristAttractions(TouristAttraction attraction){
+    public int saveTouristAttractions(TouristAttraction attraction) {
         connectToDataBase();
         int updatedRows = 0;
 
-        String insertAttraciton =  "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
-           String getTagID ="SELECT id FROM tags WHERE name = ?";
-           String insertAttractionTags =" INSERT INTO attractiontags (tourist_attraction_id, tag_id) VALUES (?, ?)";
-           try {
-               conn.setAutoCommit(false);
+        String insertAttraction = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
+        String getTagID = "SELECT id FROM tags WHERE name = ?";
+        String insertAttractionTags = "INSERT INTO attractiontags (tourist_attraction_id, tag_id) VALUES (?, ?)";
 
-           try (PreparedStatement statement = conn.prepareStatement(insertAttraciton, Statement.RETURN_GENERATED_KEYS)) {
+        try {
+            conn.setAutoCommit(false);
 
-            statement.setString(1, attraction.getName());
-            statement.setString(2, attraction.getDescription());
-            statement.setString(3, attraction.getCity());
+            // Insert the attraction into the database
+            try (PreparedStatement statement = conn.prepareStatement(insertAttraction, Statement.RETURN_GENERATED_KEYS)) {
 
-            updatedRows = statement.executeUpdate();
+                statement.setString(1, attraction.getName());
+                statement.setString(2, attraction.getDescription());
+                statement.setString(3, attraction.getCity());
 
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    int touristAttractionId = generatedKeys.getInt(1);
+                updatedRows = statement.executeUpdate();
 
-                    //insert tags
-                    try (PreparedStatement getTagIDStatement = conn.prepareStatement(getTagID)){;
-                        PreparedStatement insertAttractionTagsStatement = conn.prepareStatement(insertAttractionTags);
-                    for (String tag : attraction.getTags().split(", ")) {
-                        getTagIDStatement.setString(1, tag);
-                        try (ResultSet resultSet = getTagIDStatement.executeQuery()) {
-                            if (resultSet.next()) {
-                                int tagId = resultSet.getInt("id");
-                                insertAttractionTagsStatement.setInt(1, touristAttractionId);
-                                insertAttractionTagsStatement.setInt(2, tagId);
-                                insertAttractionTagsStatement.executeUpdate();
+                // Get the generated tourist attraction ID
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int touristAttractionId = generatedKeys.getInt(1);
+
+                        // Insert tags associated with the attraction
+                        try (PreparedStatement getTagIDStatement = conn.prepareStatement(getTagID);
+                             PreparedStatement insertAttractionTagsStatement = conn.prepareStatement(insertAttractionTags)) {
+
+                            for (String tag : attraction.getTags().split(",")) {
+                                tag = tag.trim(); // Trim to remove any leading/trailing spaces
+
+                                // Get the tag ID from the tags table
+                                getTagIDStatement.setString(1, tag);
+                                try (ResultSet resultSet = getTagIDStatement.executeQuery()) {
+                                    if (resultSet.next()) {
+                                        int tagId = resultSet.getInt("id");
+
+                                        // Insert into attractiontags table
+                                        insertAttractionTagsStatement.setInt(1, touristAttractionId);
+                                        insertAttractionTagsStatement.setInt(2, tagId);
+                                        insertAttractionTagsStatement.executeUpdate();
+                                    } else {
+                                        System.out.println("Tag not found: " + tag);
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
-            }
-               conn.commit();
-               System.out.println("A new tourist attraction was added successfully!");
-           } catch (SQLException e) {
-               e.printStackTrace();
-               System.out.println("Failed to add a new tourist attraction");
 
-               try {
-                   conn.rollback();
-               } catch (SQLException rollbackEx) {
-                   rollbackEx.printStackTrace();
-               }
-           }
-           } catch (SQLException e) {
-               e.printStackTrace();
-           } finally {
-               disconnectFromDataBase();
-           }
+            conn.commit();
+            System.out.println("A new tourist attraction was added successfully!");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Failed to add a new tourist attraction");
+            try {
+                conn.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        } finally {
+            disconnectFromDataBase();
+        }
 
         return updatedRows;
     }
+
     private void connectToDataBase() {
             try {
                 if("test".equals(activeProfile)){

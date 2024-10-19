@@ -1,6 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>save Attraction</title>
+    <link th:href="@{/style.css}" rel="stylesheet">
+</head>
+<body>
+<h1>save Attraction</h1>
+
 <form th:action="@{/attractions/save}" th:method="post" th:object="${touristAttraction}">
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" th:value="${touristAttraction.name}"> <br> <!-- Not readonly -->
+    <input type="text" id="name" name="name" th:value="${touristAttraction.name}"> <br>
 
     <label for="description">Description:</label>
     <input type="text" id="description" name="description" th:value="${touristAttraction.description}" required> <br>
@@ -16,3 +26,5 @@
 
     <button type="submit">Save</button>
 </form>
+</body>
+</html>
