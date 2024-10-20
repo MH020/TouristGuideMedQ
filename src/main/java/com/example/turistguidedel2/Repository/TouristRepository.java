@@ -57,8 +57,6 @@ public class TouristRepository {
                 String description = resultSet.getString("description");
                 String city = resultSet.getString("city");
                 String tags = resultSet.getString("tags");
-
-
                 touristAttractions.add(new TouristAttraction(name, description, city, tags));
             }
         } catch (SQLException e) {
