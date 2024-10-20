@@ -1,4 +1,5 @@
 package com.example.turistguidedel2.Repository;
+import com.example.turistguidedel2.ConnectionManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
@@ -9,22 +10,7 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-    @Value("${TEST_DATABASE_URL}")
-    private String databaseUrl;
-    @Value("${TEST_USERNAME}")
-    private String username;
-    @Value("${TEST_PASSWORD}")
-    private String password;
-    @Value("${PROD_DATABASE_URL}")
-    private String prodDatabaseUrl;
-    @Value("${PROD_USERNAME}")
-    private String prodUsername;
-    @Value("${PROD_PASSWORD}")
-    private String prodPassword;
-
-    //profilen bliver loaded her tror jeg.
-    @Value( "${spring.profiles.active}")
-    private String activeProfile;
+    private final ConnectionManager connectionManager;
 
     private Connection conn;
 
@@ -34,12 +20,14 @@ public class TouristRepository {
 
     //trying to implitment the CRUD operations as i understand them:
 
-    public TouristRepository() {
+    public TouristRepository(ConnectionManager connectionManager) {
+        this.connectionManager = connectionManager;
+        this.conn = connectionManager.getConnection();
     }
 
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
-        connectToDataBase();
+
 
         try (Statement statement = conn.createStatement()) {
             String sqlString =
@@ -61,8 +49,6 @@ public class TouristRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            disconnectFromDataBase();
         }
 
         return touristAttractions;
@@ -71,7 +57,7 @@ public class TouristRepository {
 
     //update. find the tourist attraction by name and update the description of it to the new description given in the parameters
     public void updateTouristAttraction(String name, String newDesc) {
-        connectToDataBase();
+
         String sqlString = "UPDATE touristattractions SET description = ? WHERE name = ?";
 
         try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
@@ -85,15 +71,12 @@ public class TouristRepository {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            disconnectFromDataBase();
         }
     }
 
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
         int updatedRows = 0;
-        connectToDataBase();
         String deleteAtTags = "DELETE FROM attractiontags WHERE tourist_attraction_id = (SELECT id FROM touristattractions WHERE name = ?)";
 
         String deleteAt = "DELETE FROM touristattractions WHERE name = ?";
@@ -130,8 +113,6 @@ public class TouristRepository {
             } catch (SQLException rollbackEx) {
                 rollbackEx.printStackTrace();
             }
-        } finally {
-            disconnectFromDataBase();
         }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -140,7 +121,7 @@ public class TouristRepository {
 
         //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
         public TouristAttraction getTouristAttractionByName(String name) {
-            connectToDataBase();
+
             TouristAttraction touristAttraction = null;
             String sqlString =
                     "SELECT TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city, " +
@@ -162,8 +143,6 @@ public class TouristRepository {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                disconnectFromDataBase();
             }
             return touristAttraction;
         }
@@ -171,7 +150,7 @@ public class TouristRepository {
     //get tagsList
     public ArrayList<String> getAllTags() {
         List <String> tags = new ArrayList<>();
-        connectToDataBase();
+
         String sqlString = "SELECT name FROM TAGS";
         try (Statement statement = conn.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sqlString);
@@ -187,7 +166,7 @@ public class TouristRepository {
     
     //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction) {
-        connectToDataBase();
+
         int updatedRows = 0;
 
         String insertAttraction = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
@@ -248,40 +227,9 @@ public class TouristRepository {
             } catch (SQLException rollbackEx) {
                 rollbackEx.printStackTrace();
             }
-        } finally {
-            disconnectFromDataBase();
         }
 
         return updatedRows;
-    }
-
-    private void connectToDataBase() {
-            try {
-                if("test".equals(activeProfile)){
-                    conn = DriverManager.getConnection(databaseUrl, username, password);
-                    System.out.println("Connected to the Test database");
-                } else if("prod".equals(activeProfile)){
-                    conn = DriverManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
-                    System.out.println("Connected to the PROD database");
-                } else {
-                    System.out.println("No active profile found");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Failed to connect to the  database");
-            }
-    }
-
-    private void disconnectFromDataBase() {
-        if (conn != null) {
-            try {
-                conn.close();
-                System.out.println("Disconnected from the database");
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.out.println("Failed to disconnect from the database");
-            }
-        }
     }
 
 
