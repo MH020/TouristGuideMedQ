@@ -10,8 +10,6 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-    private final ConnectionManager connectionManager;
-
     private Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
@@ -21,7 +19,7 @@ public class TouristRepository {
     //trying to implitment the CRUD operations as i understand them:
 
     public TouristRepository(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+        //this is where the connection is made to the database
         this.conn = connectionManager.getConnection();
     }
 

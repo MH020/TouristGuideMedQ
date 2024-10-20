@@ -34,12 +34,13 @@ public class ConnectionManager {
     private Connection conn;
 
     public synchronized Connection getConnection() {
+        // If a connection is already established, return it
         if (conn != null) {
             return conn;
         }
-
+        // If no connection is established, establish a new connection
         try {
-            if ("test".equals(activeProfile)) { // Use the instance field, not static
+            if ("test".equals(activeProfile)) {
                 conn = DriverManager.getConnection(databaseUrl, username, password);
                 System.out.println("Connected to the Test database");
             } else if ("prod".equals(activeProfile)) {
