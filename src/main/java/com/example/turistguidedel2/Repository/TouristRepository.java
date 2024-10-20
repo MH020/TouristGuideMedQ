@@ -1,6 +1,5 @@
 package com.example.turistguidedel2.Repository;
 import com.example.turistguidedel2.ConnectionManager;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-    private Connection conn;
+    private final Connection conn;
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
     private  final ArrayList<TouristAttraction>  touristAttractions = new ArrayList<>();
@@ -74,7 +73,7 @@ public class TouristRepository {
 
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
-        int updatedRows = 0;
+        int updatedRows;
         String deleteAtTags = "DELETE FROM attractiontags WHERE tourist_attraction_id = (SELECT id FROM touristattractions WHERE name = ?)";
 
         String deleteAt = "DELETE FROM touristattractions WHERE name = ?";
@@ -226,7 +225,6 @@ public class TouristRepository {
                 rollbackEx.printStackTrace();
             }
         }
-
         return updatedRows;
     }
 
