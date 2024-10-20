@@ -92,14 +92,52 @@ public class TouristRepository {
         }
     }
 
-
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
-        int index = touristAttractions.indexOf(getTouristAttractionByName(name));
-        if (index < 0 || index >= touristAttractions.size()) {
-            throw new IllegalArgumentException("Index out of bounds");
+        int updatedRows = 0;
+        connectToDataBase();
+        String deleteAtTags = "DELETE FROM attractiontags WHERE tourist_attraction_id = (SELECT id FROM touristattractions WHERE name = ?)";
+
+        String deleteAt = "DELETE FROM touristattractions WHERE name = ?";
+
+        try {
+            conn.setAutoCommit(false);
+
+
+
+        try (PreparedStatement statement = conn.prepareStatement(deleteAtTags)) {
+            statement.setString(1, name);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        touristAttractions.remove(index);
+
+        try (PreparedStatement statement = conn.prepareStatement(deleteAt)) {
+            statement.setString(1, name);
+            updatedRows = statement.executeUpdate();
+            // Commit the transaction
+            conn.commit();
+
+            // Check if attraction was deleted
+            if (updatedRows == 1) {
+                System.out.println("Tourist attraction and associated tags deleted successfully");
+            } else {
+                System.out.println("Tourist attraction not found");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                conn.rollback(); // Rollback in case det ikke virker og der er fejl
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+        } finally {
+            disconnectFromDataBase();
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
         //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
@@ -148,7 +186,7 @@ public class TouristRepository {
         return (ArrayList<String>) tags;
     }
 
-    //updating the database insert
+    
     //create. add a tourist attraction to the list
     public int saveTouristAttractions(TouristAttraction attraction) {
         connectToDataBase();
