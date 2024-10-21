@@ -192,7 +192,7 @@ public class TouristRepository {
                              PreparedStatement insertAttractionTagsStatement = conn.prepareStatement(insertAttractionTags)) {
 
                             for (String tag : attraction.getTags().split(",")) {
-                                tag = tag.trim(); // Trim to remove any leading/trailing spaces
+                                tag = tag.trim();
 
                                 // Get the tag ID from the tags table
                                 getTagIDStatement.setString(1, tag);
