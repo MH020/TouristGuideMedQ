@@ -41,14 +41,12 @@ public class TouristRepository {
             // Clear the existing list before adding new attractions
             touristAttractions.clear();
             while (resultSet.next()) {
-                // Retrieve values using the correct column names
-                String name = resultSet.getString("Name");
-                String description = resultSet.getString("Description");
+                String name = resultSet.getString("name");
+                String description = resultSet.getString("description");
                 String city = resultSet.getString("city");
+                int postcode = resultSet.getInt("postcode");
                 String tags = resultSet.getString("tags");
-
-                // Create a new TouristAttraction object and add it to the list
-                touristAttractions.add(new TouristAttraction(name, description, city, tags));
+                touristAttractions.add(new TouristAttraction(name, description, city,postcode, tags));
             }
         } catch (SQLException e) {
             e.printStackTrace();
