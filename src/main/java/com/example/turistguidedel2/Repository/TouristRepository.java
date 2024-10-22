@@ -24,31 +24,37 @@ public class TouristRepository {
 
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
-
+        List<TouristAttraction> touristAttractions = new ArrayList<>(); // Initialize the list
 
         try (Statement statement = conn.createStatement()) {
             String sqlString =
-                      "SELECT ta.id, ta.name, ta.description, ta.city, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
-                    + "FROM TouristAttractions ta "
-                    + "LEFT JOIN AttractionTags at ON ta.id = at.tourist_attraction_id "
-                    + "LEFT JOIN Tags t ON at.tag_id = t.id "
-                    + "GROUP BY ta.id, ta.name, ta.description, ta.city";
+                    "SELECT ta.ID, ta.Name, ta.Description, c.Name AS city, " +
+                            "GROUP_CONCAT(t.Name SEPARATOR ', ') AS tags " +
+                            "FROM Touristattractions ta " +
+                            "LEFT JOIN City c ON ta.Postcode = c.Postcode " +  // Join City to get the city name
+                            "LEFT JOIN AttractionsTags at ON ta.ID = at.Touristattraction_ID " + // Correct table reference
+                            "LEFT JOIN Tags t ON at.Tags_ID = t.ID " + // Correct table reference
+                            "GROUP BY ta.ID, ta.Name, ta.Description, c.Name"; // Group by the selected fields
 
             ResultSet resultSet = statement.executeQuery(sqlString);
 
+            // Clear the existing list before adding new attractions
             touristAttractions.clear();
             while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String description = resultSet.getString("description");
+                // Retrieve values using the correct column names
+                String name = resultSet.getString("Name");
+                String description = resultSet.getString("Description");
                 String city = resultSet.getString("city");
                 String tags = resultSet.getString("tags");
+
+                // Create a new TouristAttraction object and add it to the list
                 touristAttractions.add(new TouristAttraction(name, description, city, tags));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return touristAttractions;
+        return touristAttractions; // Return the list of tourist attractions
     }
 
 
