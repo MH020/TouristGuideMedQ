@@ -1,5 +1,7 @@
 package com.example.turistguidedel2.Repository;
 import com.example.turistguidedel2.ConnectionManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.stereotype.Repository;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
@@ -9,7 +11,15 @@ import java.util.List;
 
 @Repository
 public class TouristRepository {
-    private final Connection conn;
+    @Value("${PROD_DATABASE_URL}")
+    private String prodDatabaseUrl;
+
+    @Value("${PROD_USERNAME}")
+    private String prodUsername;
+
+    @Value("${PROD_PASSWORD}")
+    private String prodPassword;
+
 
     // this is a list of tourist attractions that will be used to store the tourist attractions
     private  final ArrayList<TouristAttraction>  touristAttractions = new ArrayList<>();
@@ -17,14 +27,9 @@ public class TouristRepository {
 
     //trying to implitment the CRUD operations as i understand them:
 
-    public TouristRepository(ConnectionManager connectionManager) {
-        //this is where the connection is made to the database
-        this.conn = connectionManager.getConnection();
-    }
-
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
-
+        Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
 
         try (Statement statement = conn.createStatement()) {
             String sqlString =
@@ -57,7 +62,7 @@ public class TouristRepository {
     public void updateTouristAttraction(String name, String newDesc) {
 
         String sqlString = "UPDATE touristattractions SET description = ? WHERE name = ?";
-
+        Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
         try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
             statement.setString(1, newDesc);
             statement.setString(2, name);
@@ -74,6 +79,7 @@ public class TouristRepository {
 
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
+        Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
         int updatedRows;
         String deleteAtTags = "DELETE FROM attractiontags WHERE tourist_attraction_id = (SELECT id FROM touristattractions WHERE name = ?)";
 
@@ -129,7 +135,7 @@ public class TouristRepository {
                             "LEFT JOIN Tags ON AttractionTags.tag_id = Tags.id " +
                             "WHERE TouristAttractions.name LIKE ? " +
                             "GROUP BY TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city";
-
+            Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
             try (PreparedStatement statement = conn.prepareStatement(sqlString)){
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
@@ -151,6 +157,7 @@ public class TouristRepository {
         List <String> tags = new ArrayList<>();
 
         String sqlString = "SELECT name FROM TAGS";
+        Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
         try (Statement statement = conn.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sqlString);
             while (resultSet.next()) {
@@ -174,7 +181,7 @@ public class TouristRepository {
         String getCity = "SELECT postcode FROM city WHERE postcode = ?";
         String getTagID = "SELECT id FROM tags WHERE name = ?";
         String insertAttractionTags = "INSERT INTO attractiontags (tourist_attraction_id, tag_id) VALUES (?, ?)";
-
+        Connection conn = ConnectionManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
         try {
             conn.setAutoCommit(false);
 
