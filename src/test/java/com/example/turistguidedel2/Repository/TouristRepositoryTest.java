@@ -15,27 +15,20 @@ class TouristRepositoryTest {
     @Test
     void getAllTouristAttractionsTest() {
 
-
     }
 
     @Test
     void updateTouristAttractionTest() {
-        // Arrange
-
-
-        // Assert
 
     }
 
     @Test
     void deleteTouristAttractionTest() {
 
-        // Assert
-
     }
 
     @Test
     void populateAttractionsTest() {
-        //
+
     }
 }
