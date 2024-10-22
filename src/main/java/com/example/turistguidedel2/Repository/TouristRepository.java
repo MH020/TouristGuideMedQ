@@ -139,8 +139,9 @@ public class TouristRepository {
                 if (resultSet.next()) {
                     String description = resultSet.getString("description");
                     String city = resultSet.getString("city");
+                    int postcode = resultSet.getInt("postcode");
                     String tags = resultSet.getString("tags");
-                    touristAttraction = new TouristAttraction(name, description, city, tags);
+                    touristAttraction = new TouristAttraction(name, description,city, postcode, tags);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
