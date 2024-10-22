@@ -37,7 +37,7 @@ public class TouristRepository {
     public TouristRepository() {
     }
 
-    //read. simply return the list of tourist attractions and print them out
+    //read. simply return the list of tourist attractions and print them out ddscz
     public List<TouristAttraction> getAllTouristAttractions() {
         connectToDataBase();
 
@@ -56,8 +56,11 @@ public class TouristRepository {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String city = resultSet.getString("city");
+                int postcode = resultSet.getInt("postcode");
                 String tags = resultSet.getString("tags");
-                touristAttractions.add(new TouristAttraction(name, description, city, tags));
+
+                touristAttractions.add(new TouristAttraction(name, description, city,postcode, tags));
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
