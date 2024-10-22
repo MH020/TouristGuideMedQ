@@ -11,6 +11,22 @@ public class TouristAttraction {
     private int postcode;
     private String tags;
 
+    //constructor
+    public TouristAttraction(String name, String description, String city,int postcode, String tags) {
+        this.name = name;
+        this.description = description;
+        this.city = city;
+        this.tags = tags;
+        this.postcode = postcode;
+    }
+
+    public TouristAttraction(String name, String description, String city, String tags) {
+        this.name = name;
+        this.description = description;
+        this.city = city;
+        this.tags = tags;
+    }
+
     //getters and setters
     public String getName() {
         return name;
@@ -57,13 +73,7 @@ public class TouristAttraction {
     }
 
 
-    //constructor
-    public TouristAttraction(String name, String description, String city,int postcode, String tags) {
-        this.name = name;
-        this.description = description;
-        this.city = city;
-        this.tags = tags;
-    }
+
 
 
 }
