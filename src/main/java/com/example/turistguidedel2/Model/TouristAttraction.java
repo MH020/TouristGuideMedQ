@@ -8,7 +8,8 @@ public class TouristAttraction {
     private String name;
     private String description;
     private String city;
-    private String tags ;
+    private int postcode;
+    private String tags;
 
     //getters and setters
     public String getName() {
@@ -26,18 +27,29 @@ public class TouristAttraction {
     public void setDescription(String description) {
         this.description = description;
     }
+
     public String getTags() {
         return tags;
     }
+
     public void setTags(String tags) {
         this.tags = tags;
     }
 
-    public String getCity(){
+    public String getCity() {
         return city;
     }
-    public void setCity(String city){
+
+    public void setCity(String city) {
         this.city = city;
+    }
+
+    public void setPostcode(int postcode){
+        this.postcode =postcode;
+    }
+
+    public int getPostcode(){
+        return postcode;
     }
 
     //Tom constructor
@@ -46,7 +58,7 @@ public class TouristAttraction {
 
 
     //constructor
-    public TouristAttraction(String name, String description, String city,  String tags) {
+    public TouristAttraction(String name, String description, String city,int postcode, String tags) {
         this.name = name;
         this.description = description;
         this.city = city;
