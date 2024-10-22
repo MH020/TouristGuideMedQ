@@ -28,11 +28,11 @@ public class TouristRepository {
 
         try (Statement statement = conn.createStatement()) {
             String sqlString =
-                      "SELECT ta.id, ta.name, ta.description, ta.city, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
+                      "SELECT ta.id, ta.name, ta.description, ta.postcode, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags "
                     + "FROM TouristAttractions ta "
                     + "LEFT JOIN AttractionTags at ON ta.id = at.tourist_attraction_id "
                     + "LEFT JOIN Tags t ON at.tag_id = t.id "
-                    + "GROUP BY ta.id, ta.name, ta.description, ta.city";
+                    + "GROUP BY ta.id, ta.name, ta.description, ta.postcode";
 
             ResultSet resultSet = statement.executeQuery(sqlString);
 
@@ -41,8 +41,9 @@ public class TouristRepository {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
                 String city = resultSet.getString("city");
+                int postcode = resultSet.getInt("postcode");
                 String tags = resultSet.getString("tags");
-                touristAttractions.add(new TouristAttraction(name, description, city, tags));
+                touristAttractions.add(new TouristAttraction(name, description, city,postcode, tags));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -135,8 +136,9 @@ public class TouristRepository {
                 if (resultSet.next()) {
                     String description = resultSet.getString("description");
                     String city = resultSet.getString("city");
+                    int postcode = resultSet.getInt("postcode");
                     String tags = resultSet.getString("tags");
-                    touristAttraction = new TouristAttraction(name, description, city, tags);
+                    touristAttraction = new TouristAttraction(name, description,city, postcode, tags);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -166,35 +168,56 @@ public class TouristRepository {
 
         int updatedRows = 0;
 
-        String insertAttraction = "INSERT INTO touristattractions (name, description, city) VALUES (?, ?, ?)";
+
+        String insertAttraction = "INSERT INTO touristattractions (name, description, postcode) VALUES (?, ?, ?)";
+        String insertCity = "INSERT INTO city (postcode, city) VALUES (?, ?)";
+        String getCity = "SELECT postcode FROM city WHERE postcode = ?";
         String getTagID = "SELECT id FROM tags WHERE name = ?";
         String insertAttractionTags = "INSERT INTO attractiontags (tourist_attraction_id, tag_id) VALUES (?, ?)";
 
         try {
             conn.setAutoCommit(false);
 
-            // Insert the attraction into the database
+
+            try (PreparedStatement statement = conn.prepareStatement(getCity)){
+                statement.setInt(1, attraction.getPostcode());
+                try (ResultSet rs = statement.executeQuery()) {
+                    if (rs.next()) {
+
+                    }
+                }
+            }
+
+
+            // Insert at
             try (PreparedStatement statement = conn.prepareStatement(insertAttraction, Statement.RETURN_GENERATED_KEYS)) {
 
                 statement.setString(1, attraction.getName());
                 statement.setString(2, attraction.getDescription());
-                statement.setString(3, attraction.getCity());
+                statement.setInt(3, attraction.getPostcode());
 
                 updatedRows = statement.executeUpdate();
 
-                // Get the generated tourist attraction ID
+                // return id
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         int touristAttractionId = generatedKeys.getInt(1);
 
-                        // Insert tags associated with the attraction
+                        // Insert city
+                        try (PreparedStatement cityStatement = conn.prepareStatement(insertCity)) {
+                            cityStatement.setInt(1, attraction.getPostcode());
+                            cityStatement.setString(2, attraction.getCity());
+                            cityStatement.executeUpdate();
+                        }
+
+                        // Insert tags
                         try (PreparedStatement getTagIDStatement = conn.prepareStatement(getTagID);
                              PreparedStatement insertAttractionTagsStatement = conn.prepareStatement(insertAttractionTags)) {
 
                             for (String tag : attraction.getTags().split(",")) {
                                 tag = tag.trim();
 
-                                // Get the tag ID from the tags table
+                                // Get the tag ID
                                 getTagIDStatement.setString(1, tag);
                                 try (ResultSet resultSet = getTagIDStatement.executeQuery()) {
                                     if (resultSet.next()) {
@@ -227,6 +250,7 @@ public class TouristRepository {
         }
         return updatedRows;
     }
+
 
 
 }

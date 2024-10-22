@@ -33,6 +33,10 @@ public class ConnectionManager {
 
     private Connection conn;
 
+    private ConnectionManager(){
+
+    }
+
     public synchronized Connection getConnection() {
         // If a connection is already established, return it
         if (conn != null) {
