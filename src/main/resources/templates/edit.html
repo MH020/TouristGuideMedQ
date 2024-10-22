@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <title>Edit Attraction</title>
-    <link th:href= "@{/style.css}" rel="stylesheet">
+    <link th:href="@{/style.css}" rel="stylesheet">
 </head>
-
 <body>
 <h1>Edit Attraction</h1>
 
-    <form th:action="@{/attractions/update}" th:method="post" th:object="${touristAttraction}" autocomplete="off">
+<form th:action="@{/attractions/update}" th:method="post" th:object="${touristAttraction}" autocomplete="off">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" th:value="${touristAttraction.name}" readonly> <br>
 
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" readonly> <br>
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description" th:value="${touristAttraction.description}"> <br>
 
-                <label for="description">Description:</label>
-                <input type="text" id="description" name="description"> <br>
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" th:value="${touristAttraction.city}"> <br>
 
-                <label for="city">City:</label>
-                <input type="text" id="city" name="city"> <br>
 
-        <div th:each="tag : ${taglist}">
-            <input type="checkbox" th:field="*{tags}" th:value="${tag}" th:text="${tag}">
-            <label th:for="${tag}"> </label> <br>
-        </div>
+    <div th:each="tag : ${availableTags}">
+        <input type="checkbox" th:id="${tag}" th:name="tags" th:value="${tag}"
+               th:checked="${#lists.contains(touristAttraction.tags, tag)}">
+        <label th:for="${tag}" th:text="${tag}"></label>
+    </div>
+    <br>
 
-<button type="submit">Update</button>
+    <button type="submit">Update</button>
 </form>
 
 </body>
