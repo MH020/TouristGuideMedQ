@@ -1,121 +1,97 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+-- H2 Compatible SQL Script
 
 -- -----------------------------------------------------
 -- Schema touristguidedb
 -- -----------------------------------------------------
 
--- -----------------------------------------------------
--- Schema touristguidedb
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `touristguidedb` DEFAULT CHARACTER SET utf8 ;
-USE `touristguidedb` ;
+
+-- Drop tables if they already exist to avoid conflicts
+DROP TABLE IF EXISTS AttractionsTags CASCADE;
+DROP TABLE IF EXISTS Tags CASCADE;
+DROP TABLE IF EXISTS Touristattractions CASCADE;
+DROP TABLE IF EXISTS City CASCADE;
 
 -- -----------------------------------------------------
 -- Table `touristguidedb`.`City`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `touristguidedb`.`City` (
-  `Postcode` INT NOT NULL,
-  `Name` VARCHAR(45) NULL,
-  UNIQUE INDEX `name_UNIQUE` (`Name` ASC) VISIBLE,
-  PRIMARY KEY (`Postcode`))
-ENGINE = InnoDB;
+CREATE TABLE City (
+                                     Postcode INT NOT NULL,
+                                     Name VARCHAR(45) UNIQUE  NOT NULL,
+                                     PRIMARY KEY (Postcode)
 
+);
 
 -- -----------------------------------------------------
 -- Table `touristguidedb`.`Touristattractions`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `touristguidedb`.`Touristattractions` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(45) NOT NULL,
-  `Description` VARCHAR(300) NOT NULL,
-  `Postcode` INT NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `Name_UNIQUE` (`Name` ASC) VISIBLE,
-  UNIQUE INDEX `Description_UNIQUE` (`Description` ASC) VISIBLE,
-  INDEX `postcode_idx` (`Postcode` ASC) VISIBLE,
-  CONSTRAINT `postcode`
-    FOREIGN KEY (`Postcode`)
-    REFERENCES `touristguidedb`.`City` (`Postcode`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE Touristattractions (
+                                                   ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                                   Name VARCHAR(45) UNIQUE NOT NULL,
+                                                   Description VARCHAR(300) NOT NULL,
+                                                   Postcode INT NOT NULL,
 
+                                                   CONSTRAINT Description_UNIQUE UNIQUE (Description),
+                                                   FOREIGN KEY (Postcode)
+                                                       REFERENCES City (Postcode)
+                                                       ON DELETE NO ACTION
+                                                       ON UPDATE NO ACTION
+);
 
 -- -----------------------------------------------------
 -- Table `touristguidedb`.`Tags`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `touristguidedb`.`Tags` (
-  `ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE INDEX `name_UNIQUE` (`Name` ASC) VISIBLE)
-ENGINE = InnoDB;
+CREATE TABLE Tags (
+                                     ID INT NOT NULL AUTO_INCREMENT,
+                                     Name VARCHAR(45) UNIQUE NOT NULL,
+                                     PRIMARY KEY (ID)
 
+);
 
 -- -----------------------------------------------------
 -- Table `touristguidedb`.`AttractionsTags`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `touristguidedb`.`AttractionsTags` (
-  `Touristattraction_ID` INT NOT NULL,
-  `Tags_ID` INT NOT NULL,
-  PRIMARY KEY (`Touristattraction_ID`, `Tags_ID`),
-  INDEX `Tags_id_idx` (`Tags_ID` ASC) VISIBLE,
-  CONSTRAINT `TourisAttraction_ID`
-    FOREIGN KEY (`Touristattraction_ID`)
-    REFERENCES `touristguidedb`.`Touristattractions` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `Tags_id`
-    FOREIGN KEY (`Tags_ID`)
-    REFERENCES `touristguidedb`.`Tags` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+CREATE TABLE AttractionsTags (
+                                                Touristattraction_ID INT NOT NULL,
+                                                Tags_ID INT NOT NULL,
+                                                PRIMARY KEY (Touristattraction_ID, Tags_ID),
+                                                CONSTRAINT Tags_id FOREIGN KEY (Tags_ID)
+                                                    REFERENCES Tags (ID)
+                                                    ON DELETE NO ACTION
+                                                    ON UPDATE NO ACTION,
+                                                CONSTRAINT TourisAttraction_ID FOREIGN KEY (Touristattraction_ID)
+                                                    REFERENCES Touristattractions (ID)
+                                                    ON DELETE NO ACTION
+                                                    ON UPDATE NO ACTION
+);
+-- Insert test data into City
+INSERT INTO City (Postcode, Name) VALUES
+                                      (12345, 'Springfield'),
+                                      (54321, 'Shelbyville'),
+                                      (98765, 'Capital City'),
+                                      (24680, 'Smalltown');
 
+-- Insert test data into Tags
+INSERT INTO Tags (ID, Name) VALUES
+                                (1, 'Museum'),
+                                (2, 'Park'),
+                                (3, 'Historic Site'),
+                                (4, 'Landmark'),
+                                (5, 'Nature');
 
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+-- Insert test data into Touristattractions
+INSERT INTO Touristattractions (ID, Name, Description, Postcode) VALUES
+                                                                     (1, 'Springfield Museum', 'A museum showcasing local history.', 12345),
+                                                                     (2, 'Shelbyville Park', 'A beautiful park with lots of greenery.', 54321),
+                                                                     (3, 'Capital City Library', 'The largest library in the capital.', 98765),
+                                                                     (4, 'Smalltown Historic District', 'A district full of historic buildings.', 24680),
+                                                                     (5, 'The Great Landmark', 'An iconic landmark of the area.', 54321);
 
-    -- Insert test data into `City` table
-INSERT INTO `touristguidedb`.`City` (`Postcode`, `Name`) VALUES
-                                                             (10001, 'New York'),
-                                                             (20001, 'Washington DC'),
-                                                             (94105, 'San Francisco'),
-                                                             (60601, 'Chicago'),
-                                                             (30301, 'Atlanta');
-
--- Insert test data into `Touristattractions` table
-INSERT INTO `touristguidedb`.`Touristattractions` (`Name`, `Description`, `Postcode`) VALUES
-                                                                                          ('Statue of Liberty', 'Iconic national monument located on Liberty Island in New York City.', 10001),
-                                                                                          ('Golden Gate Bridge', 'Famous suspension bridge in San Francisco.', 94105),
-                                                                                          ('Lincoln Memorial', 'National monument honoring Abraham Lincoln, located in Washington DC.', 20001),
-                                                                                          ('Millennium Park', 'Public park with outdoor artwork in Chicago.', 60601),
-                                                                                          ('Georgia Aquarium', 'One of the largest aquariums in the world, located in Atlanta.', 30301);
-
--- Insert test data into `Tags` table
-INSERT INTO `touristguidedb`.`Tags` (`Name`) VALUES
-                                                 ('Historic'),
-                                                 ('Architecture'),
-                                                 ('Cultural'),
-                                                 ('Family-friendly'),
-                                                 ('Outdoor');
-
--- Insert test data into `AttractionsTags` table
--- Assuming Tag IDs and Tourist Attraction IDs are sequential starting from 1
-INSERT INTO `touristguidedb`.`AttractionsTags` (`Touristattraction_ID`, `Tags_ID`) VALUES
-                                                                                       (1, 1), -- Statue of Liberty -> Historic
-                                                                                       (1, 2), -- Statue of Liberty -> Architecture
-                                                                                       (2, 2), -- Golden Gate Bridge -> Architecture
-                                                                                       (2, 5), -- Golden Gate Bridge -> Outdoor
-                                                                                       (3, 1), -- Lincoln Memorial -> Historic
-                                                                                       (3, 2), -- Lincoln Memorial -> Architecture
-                                                                                       (4, 5), -- Millennium Park -> Outdoor
-                                                                                       (5, 4), -- Georgia Aquarium -> Family-friendly
-                                                                                       (5, 5); -- Georgia Aquarium -> Outdoor
-
+-- Insert test data into AttractionsTags
+INSERT INTO AttractionsTags (Touristattraction_ID, Tags_ID) VALUES
+                                                                (1, 1),  -- Springfield Museum - Museum
+                                                                (1, 4),  -- Springfield Museum - Landmark
+                                                                (2, 2),  -- Shelbyville Park - Park
+                                                                (3, 5),  -- Capital City Library - Nature
+                                                                (4, 3),  -- Smalltown Historic District - Historic Site
+                                                                (5, 4);  -- The Great Landmark - Landmark
 
