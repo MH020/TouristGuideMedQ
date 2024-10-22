@@ -22,7 +22,7 @@ public class TouristRepository {
         this.conn = connectionManager.getConnection();
     }
 
-    //read. simply return the list of tourist attractions and print them out
+    //read. simply return the list of tourist attractions and print them out ddscz
     public List<TouristAttraction> getAllTouristAttractions() {
         List<TouristAttraction> touristAttractions = new ArrayList<>(); // Initialize the list
 
