@@ -18,7 +18,7 @@ class TouristAttractionTest {
         assertEquals(0, attraction.getPostcode());  // default value for int is 0
     }
 
-   /* @Test
+    @Test
     public void testParameterizedConstructor() {
         // Test the constructor with parameters
         TouristAttraction attraction = new TouristAttraction("Eiffel Tower", "Famous Paris monument", "Paris", 75007, "landmark");
@@ -28,7 +28,7 @@ class TouristAttractionTest {
         assertEquals("Paris", attraction.getCity());
         assertEquals(75007, attraction.getPostcode());
         assertEquals("landmark", attraction.getTags());
-    }*/
+    }
 
     @Test
     public void testSettersAndGetters() {
