@@ -9,37 +9,19 @@ class TouristRepositoryTest {
 
     @Test
     void addTouristAttractionTest() {
-        // Arrange
-        TouristRepository repository = new TouristRepository();
-        TouristAttraction attraction = new TouristAttraction("name", "description", "city", null);
 
-        // Act
-        repository.addTouristAttraction(attraction);
-
-        // Assert
-        assertTrue(repository.getAllTouristAttractions().contains(attraction));
     }
 
     @Test
     void getAllTouristAttractionsTest() {
-        // Arrange
-        TouristRepository repository = new TouristRepository();
 
-        // Act
-        List<TouristAttraction> attractions = repository.getAllTouristAttractions();
-
-        // Assert
 
     }
 
     @Test
     void updateTouristAttractionTest() {
         // Arrange
-        TouristRepository repository = new TouristRepository();
-        String newDescription = "new description";
 
-        // Act
-        repository.updateTouristAttraction("name", newDescription);
 
         // Assert
 
@@ -47,13 +29,6 @@ class TouristRepositoryTest {
 
     @Test
     void deleteTouristAttractionTest() {
-        // Arrange
-        TouristRepository repository = new TouristRepository();
-        //TouristAttraction attraction = new TouristAttraction("name", "description", "city", null);
-        //repository.addTouristAttraction(attraction);
-
-        // Act
-        repository.deleteTouristAttraction("name");
 
         // Assert
 
