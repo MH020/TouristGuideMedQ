@@ -28,13 +28,13 @@ public class TouristRepository {
 
         try (Statement statement = conn.createStatement()) {
             String sqlString =
-                    "SELECT ta.ID, ta.Name, ta.Description, c.Name AS city, " +
-                            "GROUP_CONCAT(t.Name SEPARATOR ', ') AS tags " +
-                            "FROM Touristattractions ta " +
-                            "LEFT JOIN City c ON ta.Postcode = c.Postcode " +  // Join City to get the city name
-                            "LEFT JOIN AttractionsTags at ON ta.ID = at.Touristattraction_ID " + // Correct table reference
-                            "LEFT JOIN Tags t ON at.Tags_ID = t.ID " + // Correct table reference
-                            "GROUP BY ta.ID, ta.Name, ta.Description, c.Name"; // Group by the selected fields
+                    "SELECT Touristattractions.ID, Touristattractions.Name, Touristattractions.Description, Touristattractions.Postcode, City.Name, " +
+                            "       GROUP_CONCAT(Tags.Name SEPARATOR ', ') AS tags " +
+                            "FROM Touristattractions " +
+                            "LEFT JOIN City ON Touristattractions.Postcode = City.Postcode " +
+                            "LEFT JOIN AttractionsTags ON Touristattractions.ID = AttractionsTags.Touristattraction_ID " +
+                            "LEFT JOIN Tags ON AttractionsTags.Tags_ID = Tags.ID " +
+                            "GROUP BY Touristattractions.ID, Touristattractions.Name, Touristattractions.Description, Touristattractions.Postcode, City.Name";
 
             ResultSet resultSet = statement.executeQuery(sqlString);
 
@@ -43,7 +43,7 @@ public class TouristRepository {
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String description = resultSet.getString("description");
-                String city = resultSet.getString("city");
+                String city = resultSet.getString("name");
                 int postcode = resultSet.getInt("postcode");
                 String tags = resultSet.getString("tags");
                 touristAttractions.add(new TouristAttraction(name, description, city,postcode, tags));
