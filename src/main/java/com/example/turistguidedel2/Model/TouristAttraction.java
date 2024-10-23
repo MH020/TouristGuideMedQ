@@ -45,7 +45,7 @@ public class TouristAttraction {
     }
 
     public void setPostcode(int postcode){
-        this.postcode = postcode;
+        this.postcode =postcode;
     }
 
     public int getPostcode(){
@@ -58,11 +58,10 @@ public class TouristAttraction {
 
 
     //constructor
-    public TouristAttraction(String name, String description, String city, int postcode, String tags) {
+    public TouristAttraction(String name, String description, String city,int postcode, String tags) {
         this.name = name;
         this.description = description;
         this.city = city;
-        this.postcode = postcode;
         this.tags = tags;
     }
 

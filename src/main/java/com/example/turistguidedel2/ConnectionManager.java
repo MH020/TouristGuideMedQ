@@ -10,15 +10,6 @@ import java.sql.SQLException;
 @Component
 public class ConnectionManager {
 
-    @Value("${TEST_DATABASE_URL}")
-    private String databaseUrl;
-
-    @Value("${TEST_USERNAME}")
-    private String username;
-
-    @Value("${TEST_PASSWORD}")
-    private String password;
-
     @Value("${PROD_DATABASE_URL}")
     private String prodDatabaseUrl;
 
@@ -41,7 +32,7 @@ public class ConnectionManager {
         // If no connection is established, establish a new connection
         try {
             if ("test".equals(activeProfile)) {
-                conn = DriverManager.getConnection(databaseUrl, username, password);
+                conn = DriverManager.getConnection("jdbc:h2:mem:devdb;INIT=runscript from 'src/main/resources/data.sql'","sa","");
                 System.out.println("Connected to the Test database");
             } else if ("prod".equals(activeProfile)) {
                 conn = DriverManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
