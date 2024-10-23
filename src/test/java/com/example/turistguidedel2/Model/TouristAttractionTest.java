@@ -1,3 +1,4 @@
+//unittest for TouristAttraction class
 package com.example.turistguidedel2.Model;
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TouristAttractionTest {
 
     @Test
-    public void testEmptyConstructor() {
+    public void emptyConstructorTest() {
         // Test the empty constructor
         TouristAttraction attraction = new TouristAttraction();
 
@@ -19,40 +20,40 @@ class TouristAttractionTest {
     }
 
     @Test
-    public void testParameterizedConstructor() {
+    public void parameterizedConstructorTest() {
         // Test the constructor with parameters
-        TouristAttraction attraction = new TouristAttraction("Eiffel Tower", "Famous Paris monument", "Paris", 75007, "landmark");
+        TouristAttraction attraction = new TouristAttraction("Bakken", "Amusement park", "Klampenborg", 2930, "nature");
 
-        assertEquals("Eiffel Tower", attraction.getName());
-        assertEquals("Famous Paris monument", attraction.getDescription());
-        assertEquals("Paris", attraction.getCity());
-        assertEquals(75007, attraction.getPostcode());
-        assertEquals("landmark", attraction.getTags());
+        assertEquals("Bakken", attraction.getName());
+        assertEquals("Amusement park", attraction.getDescription());
+        assertEquals("Klampenborg", attraction.getCity());
+        assertEquals(2930, attraction.getPostcode());
+        assertEquals("nature", attraction.getTags());
     }
 
     @Test
-    public void testSettersAndGetters() {
+    public void settersAndGettersTest() {
         // Test the setters and getters
         TouristAttraction attraction = new TouristAttraction();
 
-        attraction.setName("Great Wall of China");
-        assertEquals("Great Wall of China", attraction.getName());
+        attraction.setName("Bakken");
+        assertEquals("Bakken", attraction.getName());
 
-        attraction.setDescription("Ancient wall in China");
-        assertEquals("Ancient wall in China", attraction.getDescription());
+        attraction.setDescription("Amusement park");
+        assertEquals("Amusement park", attraction.getDescription());
 
-        attraction.setCity("Beijing");
-        assertEquals("Beijing", attraction.getCity());
+        attraction.setCity("Klampenborg");
+        assertEquals("Klampenborg", attraction.getCity());
 
-        attraction.setPostcode(100000);
-        assertEquals(100000, attraction.getPostcode());
+        attraction.setPostcode(2930);
+        assertEquals(2930, attraction.getPostcode());
 
-        attraction.setTags("historic, UNESCO");
-        assertEquals("historic, UNESCO", attraction.getTags());
+        attraction.setTags("nature, park");
+        assertEquals("nature, park", attraction.getTags());
     }
 
     @Test
-    public void testGetPostcodeDefaultValue() {
+    public void getPostcodeDefaultValueTest() {
         // Test default value of postcode (which should be 0)
         TouristAttraction attraction = new TouristAttraction();
         assertEquals(0, attraction.getPostcode());
