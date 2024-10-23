@@ -19,10 +19,12 @@
     <input type="text" id="city" name="city" th:value="${touristAttraction.city}" required> <br>
 
     <label for="city">postcode:</label>
-    <input type="text" id="postcode" name="postcode" th:value="${touristAttraction.postcode}"> <br>
+    <label for="postcode"></label><input type="text" id="postcode" name="postcode" th:value="${touristAttraction.postcode}"> <br>
 
     <div th:each="tag : ${availableTags}">
-        <input type="checkbox" th:id="${tag}" th:name="tags" th:value="${tag}">
+        <label>
+            <input type="checkbox" th:id="${tag}" th:name="tags" th:value="${tag}">
+        </label>
         <label th:for="${tag}" th:text="${tag}"></label>
     </div>
 

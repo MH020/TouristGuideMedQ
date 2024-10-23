@@ -111,26 +111,28 @@ public class TouristRepository {
 
         //get name. get tourist attraction by name and return it if it exists in the list of tourist attractions now with SQL needs tags some
         public TouristAttraction getTouristAttractionByName(String name) {
-
             TouristAttraction touristAttraction = null;
             String sqlString =
-                    "SELECT TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city, " +
-                            "GROUP_CONCAT(Tags.name SEPARATOR ', ') AS tags " +
-                            "FROM TouristAttractions " +
-                            "LEFT JOIN AttractionTags ON TouristAttractions.id = AttractionTags.tourist_attraction_id " +
-                            "LEFT JOIN Tags ON AttractionTags.tag_id = Tags.id " +
-                            "WHERE TouristAttractions.name LIKE ? " +
-                            "GROUP BY TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, TouristAttractions.city";
+                    "SELECT TouristAttractions.id, TouristAttractions.name, TouristAttractions.description," +
+                            "       City.Name AS city, TouristAttractions.postcode, " +
+                            "       GROUP_CONCAT(Tags.name SEPARATOR ', ') AS tags " +
+                            "FROM TouristAttractions \n" +
+                            "LEFT JOIN AttractionsTags ON TouristAttractions.id = AttractionsTags.Touristattraction_ID " +
+                            "LEFT JOIN Tags ON AttractionsTags.Tags_ID = Tags.id " +
+                            "LEFT JOIN City ON TouristAttractions.postcode = City.Postcode " +
+                            "WHERE TouristAttractions.name = ? " +
+                            "GROUP BY TouristAttractions.id, TouristAttractions.name, TouristAttractions.description, City.Name, TouristAttractions.postcode;";
 
-            try (PreparedStatement statement = conn.prepareStatement(sqlString)){
+            try (PreparedStatement statement = conn.prepareStatement(sqlString)) {
                 statement.setString(1, name);
                 ResultSet resultSet = statement.executeQuery();
                 if (resultSet.next()) {
                     String description = resultSet.getString("description");
-                    String city = resultSet.getString("city");
-                    int postcode = resultSet.getInt("postcode");
-                    String tags = resultSet.getString("tags");
-                    touristAttraction = new TouristAttraction(name, description,city, postcode, tags);
+                    String city = resultSet.getString("city"); // This now retrieves the city name from the City table
+                    int postcode = resultSet.getInt("postcode"); // Retrieve postcode
+                    String tags = resultSet.getString("tags"); // Get concatenated tags
+
+                    touristAttraction = new TouristAttraction(name, description, city, postcode, tags);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -138,9 +140,11 @@ public class TouristRepository {
             return touristAttraction;
         }
 
+
+
     //get tagsList
     public ArrayList<String> getAllTags() {
-        List <String> tags = new ArrayList<>();
+        ArrayList<String> tags = new ArrayList<>();
 
         String sqlString = "SELECT name FROM TAGS";
         try (Statement statement = conn.createStatement()) {
@@ -151,7 +155,7 @@ public class TouristRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return (ArrayList<String>) tags;
+        return tags;
     }
 
     //create. add a tourist attraction to the list
@@ -172,8 +176,6 @@ public class TouristRepository {
         //handling tag table and attractiontags table
         addTagsToTagsTable(attraction, touristAttractionId);
 
-        //cityHandler(attraction.getName(), attraction.getPostcode());
-        //conn.commit();
         System.out.println("A new tourist attraction was added successfully!");
 
         return touristAttractionId;
