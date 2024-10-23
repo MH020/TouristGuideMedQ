@@ -44,9 +44,11 @@ public class TouristControllerIT {
     @Test
     public void testSaveTouristAttractions() throws Exception {
         mockMvc.perform(post("/attractions/save")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        //.contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("name", "Statue of Liberty")
-                        .param("description", "Iconic statue in New York City."))
+                        .param("description", "Iconic statue in New York City.")
+                        .param("postcode", "10001")
+                        .param("tags", "Landmark"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/attractions"));
 
@@ -66,6 +68,6 @@ public class TouristControllerIT {
         // Verify the attraction is no longer in the database
         mockMvc.perform(get("/attractions"))
                 .andExpect(status().isOk())
-                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(4))); // Assuming 5 initial attractions, one deleted
+                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))); // Assuming 6 attractions, one deleted
     }
 }
