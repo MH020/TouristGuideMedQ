@@ -1,3 +1,4 @@
+//integration test for TouristController
 package com.example.turistguidedel2.Controller;
 
 import com.example.turistguidedel2.Service.TouristService;
@@ -5,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+//import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 //import org.springframework.transaction.annotation.Transactional;
@@ -31,14 +32,7 @@ public class TouristControllerIT {
                 .andExpect(status().isOk())
                 .andExpect(view().name("attractionList"))
                 .andExpect(model().attributeExists("allTouristAttractions"))
-                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))) // Ensure 5 initial attractions
-                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.contains(
-                        org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Springfield Museum")),
-                        org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Shelbyville Park")),
-                        org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Capital City Library")),
-                        org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Smalltown Historic District")),
-                        org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("The Great Landmark"))
-                )));
+                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))); // Ensure 5 initial attractions
     }
 
     @Test

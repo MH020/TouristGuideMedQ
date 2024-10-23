@@ -1,4 +1,4 @@
-//unittest for TouristAttraction class
+//unittest for TouristAttraction
 package com.example.turistguidedel2.Model;
 
 import org.junit.jupiter.api.Test;
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TouristAttractionTest {
 
     @Test
-    public void emptyConstructorTest() {
+    public void testEmptyConstructor() {
         // Test the empty constructor
         TouristAttraction attraction = new TouristAttraction();
 
@@ -20,7 +20,7 @@ class TouristAttractionTest {
     }
 
     @Test
-    public void parameterizedConstructorTest() {
+    public void testParameterizedConstructor() {
         // Test the constructor with parameters
         TouristAttraction attraction = new TouristAttraction("Bakken", "Amusement park", "Klampenborg", 2930, "nature");
 
@@ -32,7 +32,7 @@ class TouristAttractionTest {
     }
 
     @Test
-    public void settersAndGettersTest() {
+    public void testSettersAndGetters() {
         // Test the setters and getters
         TouristAttraction attraction = new TouristAttraction();
 
@@ -53,7 +53,7 @@ class TouristAttractionTest {
     }
 
     @Test
-    public void getPostcodeDefaultValueTest() {
+    public void testGetPostcodeDefaultValue() {
         // Test default value of postcode (which should be 0)
         TouristAttraction attraction = new TouristAttraction();
         assertEquals(0, attraction.getPostcode());

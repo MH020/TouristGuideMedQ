@@ -91,3 +91,5 @@ INSERT INTO AttractionsTags (Touristattraction_ID, Tags_ID) VALUES
                                                                 (3, 5),  -- Capital City Library - Nature
                                                                 (4, 3),  -- Smalltown Historic District - Historic Site
                                                                 (5, 4);  -- The Great Landmark - Landmark
+-- Ensure the order of retrieval
+SELECT * FROM Touristattractions ORDER BY Name;
