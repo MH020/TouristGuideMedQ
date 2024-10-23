@@ -77,10 +77,9 @@ public class TouristRepository {
 
     //delete. simply remove the object at the index given
     public void deleteTouristAttraction(String name){
-        int updatedRows;
-        String deleteAtTags = "DELETE FROM attractiontags WHERE tourist_attraction_id = (SELECT id FROM touristattractions WHERE name = ?)";
-
+        String deleteAtTags = "DELETE FROM attractionstags WHERE Touristattraction_ID = (SELECT id FROM touristattractions WHERE name = ?)";
         String deleteAt = "DELETE FROM touristattractions WHERE name = ?";
+        String deleteCity = "DELETE FROM city WHERE postcode = (SELECT postcode FROM touristattractions WHERE name = ?)";
 
         try {
             conn.setAutoCommit(false);
@@ -94,18 +93,18 @@ public class TouristRepository {
             e.printStackTrace();
         }
 
-        try (PreparedStatement statement = conn.prepareStatement(deleteAt)) {
+            try (PreparedStatement statement = conn.prepareStatement(deleteAt)) {
+                statement.setString(1, name);
+                statement.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+        try (PreparedStatement statement = conn.prepareStatement(deleteCity)) {
             statement.setString(1, name);
-            updatedRows = statement.executeUpdate();
+            statement.executeUpdate();
             // Commit the transaction
             conn.commit();
-
-            // Check if attraction was deleted
-            if (updatedRows == 1) {
-                System.out.println("Tourist attraction and associated tags deleted successfully");
-            } else {
-                System.out.println("Tourist attraction not found");
-            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -246,7 +245,6 @@ public class TouristRepository {
     //save metode
     public void setTagInTagIDStatement(String tag, PreparedStatement tagIDStatement) throws SQLException{
         tag = tag.trim(); // Trim to remove any leading/trailing spaces
-
         // Get the tag ID from the tags table
         tagIDStatement.setString(1, tag);
     }
