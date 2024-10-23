@@ -10,7 +10,8 @@ DROP TABLE IF EXISTS Tags CASCADE;
 DROP TABLE IF EXISTS Touristattractions CASCADE;
 DROP TABLE IF EXISTS City CASCADE;
 
-
+-- -----------------------------------------------------
+-- Table `touristguidedb`.`City`
 -- -----------------------------------------------------
 CREATE TABLE City (
                       Postcode INT NOT NULL,
@@ -18,7 +19,8 @@ CREATE TABLE City (
                       PRIMARY KEY (Postcode)
 );
 
-
+-- -----------------------------------------------------
+-- Table `touristguidedb`.`Touristattractions`
 -- -----------------------------------------------------
 CREATE TABLE Touristattractions (
                                     ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -32,7 +34,8 @@ CREATE TABLE Touristattractions (
                                         ON UPDATE NO ACTION
 );
 
-
+-- -----------------------------------------------------
+-- Table `touristguidedb`.`Tags`
 -- -----------------------------------------------------
 CREATE TABLE Tags (
                       ID INT NOT NULL AUTO_INCREMENT,
@@ -40,6 +43,8 @@ CREATE TABLE Tags (
                       PRIMARY KEY (ID)
 );
 
+-- -----------------------------------------------------
+-- Table `touristguidedb`.`AttractionsTags`
 -- -----------------------------------------------------
 CREATE TABLE AttractionsTags (
                                  Touristattraction_ID INT NOT NULL,
@@ -55,7 +60,8 @@ CREATE TABLE AttractionsTags (
                                      ON UPDATE NO ACTION
 );
 
-
+-- -----------------------------------------------------
+-- Insert test data into City
 -- -----------------------------------------------------
 INSERT INTO City (Postcode, Name) VALUES
                                       (12345, 'Springfield'),
@@ -63,7 +69,8 @@ INSERT INTO City (Postcode, Name) VALUES
                                       (98765, 'Capital City'),
                                       (24680, 'Smalltown');
 
-
+-- -----------------------------------------------------
+-- Insert test data into Tags
 -- -----------------------------------------------------
 INSERT INTO Tags (Name) VALUES
                             ('Museum'),
@@ -72,7 +79,9 @@ INSERT INTO Tags (Name) VALUES
                             ('Landmark'),
                             ('Nature');
 
-
+-- -----------------------------------------------------
+-- Insert test data into Touristattractions
+-- Auto-increment IDs will be generated automatically for these entries.
 -- -----------------------------------------------------
 INSERT INTO Touristattractions (Name, Description, Postcode) VALUES
                                                                  ('Springfield Museum', 'A museum showcasing local history.', 12345),
@@ -81,7 +90,9 @@ INSERT INTO Touristattractions (Name, Description, Postcode) VALUES
                                                                  ('Smalltown Historic District', 'A district full of historic buildings.', 24680),
                                                                  ('The Great Landmark', 'An iconic landmark of the area.', 54321);
 
-
+-- -----------------------------------------------------
+-- Insert test data into AttractionsTags
+-- Using the assumption that auto-increment IDs start at 1 and increase sequentially.
 -- -----------------------------------------------------
 INSERT INTO AttractionsTags (Touristattraction_ID, Tags_ID) VALUES
                                                                 (1, 1),  -- Springfield Museum - Museum
