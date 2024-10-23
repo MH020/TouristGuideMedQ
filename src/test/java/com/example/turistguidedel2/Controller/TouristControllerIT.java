@@ -1,6 +1,6 @@
 package com.example.turistguidedel2.Controller;
 
-import com.example.turistguidedel2.Repository.TouristRepository;
+import com.example.turistguidedel2.Service.TouristService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -8,22 +8,22 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
-@AutoConfigureMockMvc // Auto-configures MockMvc
-@Transactional        // Rollback changes after each test
+@AutoConfigureMockMvc
+//@Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class TouristControllerIntegrationTest {
+public class TouristControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private TouristRepository touristRepository;
+    private TouristService touristService;
 
     @Test
     public void testGetAllTouristAttractions() throws Exception {
@@ -31,7 +31,7 @@ public class TouristControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("attractionList"))
                 .andExpect(model().attributeExists("allTouristAttractions"))
-                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))) // Assuming you have 5 initial attractions in your data.sql
+                .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))) // Ensure 5 initial attractions
                 .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.contains(
                         org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Springfield Museum")),
                         org.hamcrest.Matchers.hasProperty("name", org.hamcrest.Matchers.is("Shelbyville Park")),
@@ -59,7 +59,7 @@ public class TouristControllerIntegrationTest {
 
     @Test
     public void testDeleteTouristAttraction() throws Exception {
-        mockMvc.perform(post("/attractions/{name}/delete", "Springfield Museum")) // Deleting an existing attraction
+        mockMvc.perform(post("/attractions/{name}/delete", "Springfield Museum"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/attractions"));
 
