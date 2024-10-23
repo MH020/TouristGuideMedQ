@@ -254,6 +254,22 @@ public class TouristRepository {
         }//end of try catch resultset
     }
 
+    public void cityHandler(String name, int postcode) {
+        //inserting or updating the city
+        String insertOrUpdatePostcodeInCitySQLString =
+                "INSERT INTO city (name, postcode) VALUES (?, ?) ON DUPLICATE KEY UPDATE postcode = VALUES(postcode)";
+
+        try (PreparedStatement statement = conn.prepareStatement(insertOrUpdatePostcodeInCitySQLString)) {
+            /
+            statement.setString(1, name);
+            statement.setInt(2, postcode);
+
+            // Execute the update
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Error: " + e);
+        }
+    }
 
 }
 
