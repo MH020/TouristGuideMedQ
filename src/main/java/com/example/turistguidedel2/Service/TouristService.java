@@ -4,6 +4,7 @@ import com.example.turistguidedel2.Repository.TouristRepository;
 import org.springframework.stereotype.Service;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -20,11 +21,7 @@ public class TouristService {
     }
     // so I will now implement the CRUD operations in this class that use the repository to do the operations
 
-    //create. add a tourist attraction to the list
-    public void addTouristAttraction(TouristAttraction Attraction){
-        repository.addTouristAttraction(Attraction);
 
-    }
     //read. simply return the list of tourist attractions and print them out
     public List<TouristAttraction> getAllTouristAttractions() {
         return repository.getAllTouristAttractions();
@@ -40,18 +37,18 @@ public class TouristService {
 
     //get tourist attraction by name
     public TouristAttraction getTouristAttractionByName(String name){
-        TouristAttraction ta = repository.getTouristAttractionByName(name);
-        return ta;
+        return repository.getTouristAttractionByName(name);
     }
     //get tourist attraction tags
-
-    public List<String> getAllTouristAttractionTags() {
-        return repository.getallTags();
+    public List<String> getAllTags(){
+        return repository.getAllTags();
     }
+
+    /*
     public List<String> getTouristAttractionTags(String name) {
         return repository.getTags(name);
     }
-
+*/
     public void saveTouristAttractions(TouristAttraction touristAttraction){
             touristRepository.saveTouristAttractions(touristAttraction);
         }

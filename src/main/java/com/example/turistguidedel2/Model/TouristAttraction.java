@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TouristAttraction {
+    private int id;
     private String name;
     private String description;
     private String city;
-    private ArrayList<String> tags ;
+    private int postcode;
+    private String tags;
 
     //getters and setters
     public String getName() {
@@ -26,26 +28,42 @@ public class TouristAttraction {
         this.description = description;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setPostcode(int postcode){
+        this.postcode =postcode;
+    }
+
+    public int getPostcode(){
+        return postcode;
+    }
+
     //Tom constructor
     public TouristAttraction() {
     }
 
+
     //constructor
-    public TouristAttraction(String name, String description, String city, ArrayList<String> tags) {
+    public TouristAttraction(String name, String description, String city,int postcode, String tags) {
         this.name = name;
         this.description = description;
         this.city = city;
         this.tags = tags;
     }
 
-    public ArrayList<String> getTags(){
-        return tags;
-    }
 
-    public String getCity(){
-        return city;
-    }
-    public void setTags(ArrayList<String> tags){
-        this.tags = tags;
-    }
 }

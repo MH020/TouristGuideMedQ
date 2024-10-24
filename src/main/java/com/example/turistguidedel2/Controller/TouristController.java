@@ -5,7 +5,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.turistguidedel2.Model.TouristAttraction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,9 +27,10 @@ public class TouristController {
     //not used.
     @GetMapping("/attractions/{name}")
     public String getTouristAttractionByName(@PathVariable String name, Model model){
-        model.addAttribute("name",touristService.getTouristAttractionByName(name).getName());
+        TouristAttraction attractions = touristService.getTouristAttractionByName(name);
         return "name"; //placeholder name maybe?
     }
+    /* //needs fixing in here and in service and repo
     @GetMapping("/attractions/{name}/tags")
     public String getTouristAttractionByTags(@PathVariable String name, Model model){
         TouristAttraction attraction = touristService.getTouristAttractionByName(name);
@@ -38,7 +38,7 @@ public class TouristController {
         model.addAttribute("tags",touristService.getTouristAttractionTags(name));
         return "tags";
     }
-
+*/
     @PostMapping("/attractions/save")
     public String saveTouristAttractions(@ModelAttribute TouristAttraction touristAttraction) {
         touristService.saveTouristAttractions(touristAttraction);
@@ -47,8 +47,9 @@ public class TouristController {
 
     @GetMapping("/attractions/add")
     public String addTouristAttraction(Model model){
-        model.addAttribute("TouristAttraction", new TouristAttraction());
-        model.addAttribute("taglist", touristService.getAllTouristAttractionTags());
+        model.addAttribute("touristAttraction", new TouristAttraction());
+        List <String> availableTags  = touristService.getAllTags();
+        model.addAttribute("availableTags", availableTags);
         return "add";
     }
     @PostMapping("/attractions/update")
@@ -58,8 +59,11 @@ public class TouristController {
     }
     @GetMapping("/attractions/{name}/edit")
     public String editTouristAttraction(@PathVariable String name, Model model){
-        model.addAttribute("touristAttraction", touristService.getTouristAttractionByName(name));
-        model.addAttribute("taglist", touristService.getAllTouristAttractionTags());
+        TouristAttraction attraction = touristService.getTouristAttractionByName(name);
+        List <String> availableTags  = touristService.getAllTags();
+        model.addAttribute("touristAttraction", attraction);
+        model.addAttribute("availableTags", availableTags);
+
         return "edit";
     }
 
