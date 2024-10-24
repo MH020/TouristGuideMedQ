@@ -28,17 +28,9 @@ public class TouristController {
     @GetMapping("/attractions/{name}")
     public String getTouristAttractionByName(@PathVariable String name, Model model){
         TouristAttraction attractions = touristService.getTouristAttractionByName(name);
-        return "name"; //placeholder name maybe?
+        return "name";
     }
-    /* //needs fixing in here and in service and repo
-    @GetMapping("/attractions/{name}/tags")
-    public String getTouristAttractionByTags(@PathVariable String name, Model model){
-        TouristAttraction attraction = touristService.getTouristAttractionByName(name);
-        model.addAttribute("name",attraction.getName());
-        model.addAttribute("tags",touristService.getTouristAttractionTags(name));
-        return "tags";
-    }
-*/
+
     @PostMapping("/attractions/save")
     public String saveTouristAttractions(@ModelAttribute TouristAttraction touristAttraction) {
         touristService.saveTouristAttractions(touristAttraction);
