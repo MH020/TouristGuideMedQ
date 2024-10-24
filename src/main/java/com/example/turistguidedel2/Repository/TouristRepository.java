@@ -116,7 +116,7 @@ public class TouristRepository {
                     "SELECT TouristAttractions.id, TouristAttractions.name, TouristAttractions.description," +
                             "       City.Name AS city, TouristAttractions.postcode, " +
                             "       GROUP_CONCAT(Tags.name SEPARATOR ', ') AS tags " +
-                            "FROM TouristAttractions \n" +
+                            "FROM TouristAttractions" +
                             "LEFT JOIN AttractionsTags ON TouristAttractions.id = AttractionsTags.Touristattraction_ID " +
                             "LEFT JOIN Tags ON AttractionsTags.Tags_ID = Tags.id " +
                             "LEFT JOIN City ON TouristAttractions.postcode = City.Postcode " +
