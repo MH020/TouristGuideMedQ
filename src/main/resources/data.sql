@@ -67,7 +67,8 @@ INSERT INTO City (Postcode, Name) VALUES
                                       (12345, 'Springfield'),
                                       (54321, 'Shelbyville'),
                                       (98765, 'Capital City'),
-                                      (24680, 'Smalltown');
+                                      (24680, 'Smalltown'),
+                                      (10001, 'New York');
 
 -- -----------------------------------------------------
 -- Insert test data into Tags
@@ -101,3 +102,5 @@ INSERT INTO AttractionsTags (Touristattraction_ID, Tags_ID) VALUES
                                                                 (3, 5),  -- Capital City Library - Nature
                                                                 (4, 3),  -- Smalltown Historic District - Historic Site
                                                                 (5, 4);  -- The Great Landmark - Landmark
+-- Ensure the order of retrieval
+SELECT * FROM Touristattractions ORDER BY Name;

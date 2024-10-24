@@ -29,7 +29,7 @@ public class TouristAttraction {
     }
 
     public String getTags() {
-        return tags;
+        return tags != null ? tags : "";
     }
 
     public void setTags(String tags) {
@@ -62,6 +62,7 @@ public class TouristAttraction {
         this.name = name;
         this.description = description;
         this.city = city;
+        this.postcode = postcode;
         this.tags = tags;
     }
 
