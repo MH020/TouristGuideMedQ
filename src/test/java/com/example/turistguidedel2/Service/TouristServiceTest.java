@@ -8,26 +8,26 @@ import static org.junit.jupiter.api.Assertions.*;
 class TouristServiceTest {
 
     @Test
-    void getAllTouristAttractions() {
+    void testGetAllTouristAttractions() {
     }
 
     @Test
-    void updateTouristAttraction() {
+    void testUpdateTouristAttraction() {
     }
 
     @Test
-    void deleteTouristAttraction() {
+    void testDeleteTouristAttraction() {
     }
 
     @Test
-    void getTouristAttractionByName() {
+    void testGetTouristAttractionByName() {
     }
 
     @Test
-    void getAllTags() {
+    void testGetAllTags() {
     }
 
     @Test
-    void saveTouristAttractions() {
+    void testSaveTouristAttractions() {
     }
 }
