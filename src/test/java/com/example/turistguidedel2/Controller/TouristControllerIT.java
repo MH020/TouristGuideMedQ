@@ -1,5 +1,4 @@
 //integration test for TouristController
-/*
 package com.example.turistguidedel2.Controller;
 
 import com.example.turistguidedel2.Service.TouristService;
@@ -20,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@Transactional
 
 @TestPropertySource(locations = "classpath:application-prod.properties")
- public class TouristControllerIT {
+public class TouristControllerIT {
 
     @Autowired
     private MockMvc mockMvc;
@@ -66,4 +65,4 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("allTouristAttractions", org.hamcrest.Matchers.hasSize(5))); // Assuming 6 attractions, one deleted
     }
-} */
+}
