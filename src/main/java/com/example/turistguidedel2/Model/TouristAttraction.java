@@ -62,6 +62,7 @@ public class TouristAttraction {
         this.name = name;
         this.description = description;
         this.city = city;
+        this.postcode = postcode;
         this.tags = tags;
     }
 
