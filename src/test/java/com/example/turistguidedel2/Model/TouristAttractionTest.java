@@ -12,10 +12,10 @@ class TouristAttractionTest {
         // Test the empty constructor
         TouristAttraction attraction = new TouristAttraction();
 
-        assertNull(attraction.getName());
-        assertNull(attraction.getDescription());
-        assertNull(attraction.getCity());
-        assertNull(attraction.getTags());
+        assertEquals("", attraction.getName());
+        assertEquals("", attraction.getDescription());
+        assertEquals("", attraction.getCity());
+        assertEquals("", attraction.getTags());
         assertEquals(0, attraction.getPostcode());  // default value for int is 0
     }
 
