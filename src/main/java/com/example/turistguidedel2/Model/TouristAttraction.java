@@ -29,7 +29,7 @@ public class TouristAttraction {
     }
 
     public String getTags() {
-        return tags;
+        return tags != null ? tags : "";
     }
 
     public void setTags(String tags) {

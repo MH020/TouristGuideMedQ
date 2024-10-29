@@ -12,4 +12,3 @@ public class TuristGuideDel2Application {
     }
 
 }
-//hej alle så er vi klar igen
