@@ -10,14 +10,14 @@ import java.sql.SQLException;
 @Component
 public class ConnectionManager {
 
-    @Value("${PROD_DATABASE_URL}")
-    private String prodDatabaseUrl;
+    @Value("${spring.datasource.url}")
+    private String databaseUrl;
 
-    @Value("${PROD_USERNAME}")
-    private String prodUsername;
+    @Value("${spring.datasource.username}")
+    private String username;
 
-    @Value("${PROD_PASSWORD}")
-    private String prodPassword;
+    @Value("${spring.datasource.password}")
+    private String password;
 
     @Value("${spring.profiles.active}")
     private String activeProfile;
@@ -32,10 +32,10 @@ public class ConnectionManager {
         // If no connection is established, establish a new connection
         try {
             if ("test".equals(activeProfile)) {
-                conn = DriverManager.getConnection("jdbc:h2:mem:devdb;INIT=runscript from 'src/main/resources/data.sql'","sa","");
+                conn = DriverManager.getConnection(databaseUrl, username, password);
                 System.out.println("Connected to the Test database");
             } else if ("prod".equals(activeProfile)) {
-                conn = DriverManager.getConnection(prodDatabaseUrl, prodUsername, prodPassword);
+                conn = DriverManager.getConnection(databaseUrl, username, password);
                 System.out.println("Connected to the PROD database");
             } else {
                 System.out.println("No active profile found");
